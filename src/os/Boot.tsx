@@ -18,10 +18,13 @@ const TARGET = "KUSHAGRA";
 const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const randGlyph = () => GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
 
+// NOTE: "founder" is intentionally ABSENT here. Founder Mode (Phase H) is the
+// private operator control surface — reached only via the server-gated
+// passphrase (⌘K "Unlock Founder Mode" or the #founder deep-link), never as a
+// public visitor lens. The investor/trajectory view lives under "Just exploring".
 const AUDIENCES: ReadonlyArray<{ id: Audience; label: string; line: string }> = [
   { id: "client", label: "Client", line: "Build this for my business." },
   { id: "recruiter", label: "Recruiter", line: "Show me proof of skill." },
-  { id: "founder", label: "Founder", line: "Show me the trajectory." },
   { id: "explorer", label: "Just exploring", line: "Give me the tour." },
 ];
 

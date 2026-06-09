@@ -14,10 +14,13 @@ import { CommandBar } from "./CommandBar";
 import { VoiceAssistant } from "../assistant/VoiceAssistant";
 import { AyraPresence } from "../assistant/AyraPresence";
 import { AyraNarration } from "../assistant/AyraNarration";
+import { FounderGate } from "../founder/FounderGate";
+import { FounderMode } from "../founder/FounderMode";
 
 export function Shell() {
   const isBooted = useOS((s) => s.isBooted);
   const toggleCmdk = useOS((s) => s.toggleCmdk);
+  const openFounderGate = useOS((s) => s.openFounderGate);
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -32,6 +35,19 @@ export function Shell() {
     return () => window.removeEventListener("keydown", onKey);
   }, [isBooted, toggleCmdk]);
 
+  // Secret deep-link: visiting "#founder" raises the passphrase gate. The route
+  // is undiscoverable from the public UI and grants nothing on its own — the
+  // server key still gates everything behind it.
+  useEffect(() => {
+    if (!isBooted) return;
+    const check = () => {
+      if (window.location.hash.toLowerCase() === "#founder") openFounderGate();
+    };
+    check();
+    window.addEventListener("hashchange", check);
+    return () => window.removeEventListener("hashchange", check);
+  }, [isBooted, openFounderGate]);
+
   if (!isBooted) return <Boot />;
 
   return (
@@ -45,6 +61,8 @@ export function Shell() {
       <AyraNarration />
       <AyraPresence />
       <VoiceAssistant />
+      <FounderGate />
+      <FounderMode />
     </>
   );
 }

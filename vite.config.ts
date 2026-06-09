@@ -9,6 +9,7 @@ import { runAgent } from "./api/_lib/agentsCore";
 import { runMission } from "./api/_lib/missionCore";
 import { runLab } from "./api/_lib/labCore";
 import { runGithub } from "./api/_lib/githubCore";
+import { runFounder } from "./api/_lib/founderCore";
 import { readJson, callerKey, sendJson } from "./api/_lib/node";
 
 /* Serve the /api functions during `vite dev` AND `vite preview` so the voice
@@ -52,6 +53,10 @@ function devApi(): Connect.NextHandleFunction {
         const out = await runGithub(await readJson(r), callerKey(r));
         return sendJson(res as ServerResponse, out.status, out.json);
       }
+      if (r.method === "POST" && url.startsWith("/api/founder")) {
+        const out = await runFounder(await readJson(r), callerKey(r));
+        return sendJson(res as ServerResponse, out.status, out.json);
+      }
     } catch {
       return sendJson(res as ServerResponse, 500, { error: "server_error" });
     }
@@ -63,7 +68,7 @@ function devApi(): Connect.NextHandleFunction {
 export default defineConfig(({ mode }) => {
   // Make non-VITE_ secrets available to the server-side API middleware only.
   const env = loadEnv(mode, process.cwd(), "");
-  for (const k of ["GROQ_API_KEY", "GROQ_MODEL", "GEMINI_API_KEY", "GEMINI_MODEL", "GEMINI_TTS_MODEL", "WEB3FORMS_ACCESS_KEY", "GITHUB_TOKEN"]) {
+  for (const k of ["GROQ_API_KEY", "GROQ_MODEL", "GEMINI_API_KEY", "GEMINI_MODEL", "GEMINI_TTS_MODEL", "WEB3FORMS_ACCESS_KEY", "GITHUB_TOKEN", "FOUNDER_KEY"]) {
     if (env[k]) process.env[k] = env[k];
   }
 

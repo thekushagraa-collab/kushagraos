@@ -118,11 +118,24 @@ Marketplace + Client Mode + simulated integrations + Founder Mode + voice/growth
   on the public site (security).
 - **DoD:** panels render with demo data + "demo environment" labeling; GitHub pulls live public repos; tests green.
 
-## PHASE H — Founder Mode (private)
+## ✅ PHASE H — Founder Mode (private) — SHIPPED
 **Goal:** Kushagra-only control surface.
-- Secret route + key gate (server-checked); a private founder dashboard. Removed from public mode chooser.
-  No destructive public actions. (Real personal integrations, if ever, live here — deferred/optional.)
-- **DoD:** founder route gated (no key → denied); absent from public "login as"; tests green.
+> Shipped a server-key-gated private control surface. **Gate:** `/api/founder` verifies a passphrase
+> SERVER-SIDE against `FOUNDER_KEY` (constant-time compare, rate-limited); the key never reaches the client
+> bundle — the browser only sends a candidate and receives yes/no + non-secret integration booleans.
+> **Secure default:** with no `FOUNDER_KEY` configured, the mode is SEALED (every attempt denied).
+> **Entry (undiscoverable):** hidden ⌘K "Unlock Founder Mode" (only surfaces when searched) + `#founder`
+> deep-link → passphrase gate (`FounderGate`). **Surface:** `FounderMode` — read-only dashboard (integration
+> health, per-device traffic, live system state, build timeline). No destructive actions; never registered as
+> a dock app, never in ⌘K's public app list. **Removed "founder" from the public boot chooser.**
+> Files: `api/_lib/founderCore.ts`, `api/founder.ts`, `src/founder/{founder.ts,FounderGate.tsx,FounderMode.tsx,founder.css}`,
+> store slices, Shell mount + hash listener, CommandBar hidden command, Boot chooser trimmed,
+> `FOUNDER_KEY` in vite env allowlist + `.env.example`.
+> Verified: `tests/phase-h.spec.ts` — **13 passed, 1 skipped** (mobile ⌘K, by design) across desktop+mobile:
+> founder absent from chooser, `#founder` raises gate, wrong/empty passphrase DENIED (no surface mounts),
+> gate scan bead animating, correct passphrase unlocks + Lock exits, ⌘K command hidden-from-browse-but-searchable.
+> Also fixed two pre-existing build blockers surfaced by `tsc -b` (JSX namespace in IntegrationsApp, a union→Record cast in AutomationCenter).
+- **DoD:** founder route gated (no key → denied); absent from public "login as"; tests green. ✅
 
 ## PHASE I — Voice + Growth hooks + a11y/perf + Deploy
 **Goal:** ship it, and make every demo a lead magnet.

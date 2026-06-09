@@ -17,6 +17,8 @@ interface Command {
   label: string;
   hint: string;
   keywords?: string;
+  /** Hidden from the empty-query browse list — only surfaces when searched. */
+  hidden?: boolean;
   run: () => void;
 }
 
@@ -45,6 +47,7 @@ export function CommandBar() {
   const openApp = useOS((s) => s.openApp);
   const setTheme = useOS((s) => s.setTheme);
   const toggleMotion = useOS((s) => s.toggleMotion);
+  const openFounderGate = useOS((s) => s.openFounderGate);
   const theme = useOS((s) => s.theme);
   const motionOn = useOS((s) => s.motion);
   const audience = useOS((s) => s.audience);
@@ -106,12 +109,27 @@ export function CommandBar() {
           close();
         },
       },
+      {
+        // Founder Mode entry — hidden from browse, surfaces only on search, and
+        // grants nothing itself: it just raises the server-gated passphrase.
+        id: "founder",
+        label: "Unlock Founder Mode",
+        hint: "Operator only · passphrase",
+        keywords: "founder sudo admin private control",
+        hidden: true,
+        run: () => {
+          openFounderGate();
+          close();
+        },
+      },
     ];
     return [...apps, ...actions];
-  }, [audience, theme, motionOn, openApp, setTheme, toggleMotion, setCmdkOpen]);
+  }, [audience, theme, motionOn, openApp, setTheme, toggleMotion, openFounderGate, setCmdkOpen]);
 
   const results = useMemo(() => {
+    const hasQuery = query.trim() !== "";
     return commands
+      .filter((c) => hasQuery || !c.hidden)
       .map((c) => ({ c, s: fuzzyScore(query, `${c.label} ${c.keywords ?? ""}`) }))
       .filter((r): r is { c: Command; s: number } => r.s !== null)
       .sort((a, b) => a.s - b.s)

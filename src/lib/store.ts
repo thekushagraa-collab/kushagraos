@@ -33,6 +33,15 @@ export type AppId =
 /** Audience routing at boot ("login as") — reorders apps + tailors copy. */
 export type Audience = "client" | "recruiter" | "founder" | "explorer";
 
+/** Non-secret booleans describing which server integrations are configured.
+    Returned by /api/founder on a successful unlock — never the key values. */
+export interface FounderStatus {
+  groq: boolean;
+  gemini: boolean;
+  web3forms: boolean;
+  github: boolean;
+}
+
 export interface OSWindow {
   id: string;
   appId: AppId;
@@ -93,6 +102,19 @@ interface OSState {
   isListening: boolean;
   toggleAssistant: () => void;
   setListening: (listening: boolean) => void;
+
+  /* ---- Founder Mode (Phase H — private, server-key-gated) ------------- */
+  /** Whether the passphrase gate overlay is showing. */
+  isFounderGateOpen: boolean;
+  openFounderGate: () => void;
+  closeFounderGate: () => void;
+  /** Whether the private control surface is unlocked (this session only —
+      never persisted, so a refresh re-seals it behind the server gate). */
+  isFounderUnlocked: boolean;
+  /** Server-reported integration health, set on a successful unlock. */
+  founderStatus: FounderStatus | null;
+  unlockFounder: (status: FounderStatus) => void;
+  lockFounder: () => void;
 }
 
 const BASE_Z = 100;
@@ -221,4 +243,15 @@ export const useOS = create<OSState>((set) => ({
   toggleAssistant: () =>
     set((state) => ({ isAssistantOpen: !state.isAssistantOpen })),
   setListening: (isListening) => set({ isListening }),
+
+  /* ---- Founder Mode --------------------------------------------------- */
+  isFounderGateOpen: false,
+  openFounderGate: () => set({ isFounderGateOpen: true }),
+  closeFounderGate: () => set({ isFounderGateOpen: false }),
+  isFounderUnlocked: false,
+  founderStatus: null,
+  unlockFounder: (founderStatus) =>
+    set({ isFounderUnlocked: true, founderStatus, isFounderGateOpen: false }),
+  lockFounder: () =>
+    set({ isFounderUnlocked: false, founderStatus: null, isFounderGateOpen: false }),
 }));
