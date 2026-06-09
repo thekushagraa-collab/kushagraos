@@ -6,9 +6,10 @@
    controls how this looks.
    ========================================================================== */
 
-import type { ReactNode, CSSProperties } from "react";
+import { useRef, useState, type ReactNode, type CSSProperties } from "react";
 import { useOS } from "../lib/store";
 import { useIsMobile } from "../hooks/useIsMobile";
+import { downloadShareCard } from "../lib/shareCard";
 import "./artifacts.css";
 
 /** Minimal identity the branded frame needs. AgentMeta satisfies this, and so
@@ -26,11 +27,32 @@ export function ArtifactFrame({ agent, fallback, children }: Props) {
   const openApp = useOS((s) => s.openApp);
   const openMobileApp = useOS((s) => s.openMobileApp);
   const isMobile = useIsMobile();
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const [saving, setSaving] = useState(false);
 
   const stamp = new Date().toLocaleString(undefined, {
     month: "short", day: "numeric", hour: "2-digit", minute: "2-digit",
   });
   const goContact = () => (isMobile ? openMobileApp("contact") : openApp("contact", "Contact"));
+
+  const saveImage = async () => {
+    if (saving) return;
+    setSaving(true);
+    try {
+      const lines = (bodyRef.current?.innerText ?? "")
+        .split("\n")
+        .map((l) => l.trim())
+        .filter(Boolean);
+      await downloadShareCard({
+        title: `${agent.name} · ${agent.role}`,
+        agentName: agent.name,
+        accent: agent.accent,
+        lines,
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <article
@@ -52,16 +74,28 @@ export function ArtifactFrame({ agent, fallback, children }: Props) {
 
       <span className="artifact__rule" aria-hidden="true" />
 
-      <div className="artifact__body">{children}</div>
+      <div className="artifact__body" ref={bodyRef}>{children}</div>
 
       <footer className="artifact__foot">
         <p className="artifact__cta-line">
           {fallback ? "Live demo sample — " : "Generated for you just now — "}
           <strong>want this running for your business?</strong>
         </p>
-        <button type="button" className="artifact__cta" onClick={goContact} data-testid="artifact-cta">
-          Initiate a process →
-        </button>
+        <div className="artifact__actions">
+          <button
+            type="button"
+            className="artifact__share mono"
+            onClick={saveImage}
+            data-testid="artifact-share"
+            disabled={saving}
+            aria-label="Save this result as a branded image"
+          >
+            {saving ? "Saving…" : "Save image ↓"}
+          </button>
+          <button type="button" className="artifact__cta" onClick={goContact} data-testid="artifact-cta">
+            Initiate a process →
+          </button>
+        </div>
       </footer>
     </article>
   );

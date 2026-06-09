@@ -1,9 +1,11 @@
 # KushagraOS — Deploy to Vercel (free tier)
 
 The app is a Vite SPA (`dist/`) plus serverless functions in `api/` (`/api/ask`,
-`/api/run`, `/api/tts`, `/api/contact`). All keys stay **server-side** — they are
-read from environment variables inside the functions and never reach the browser
-bundle. `vercel.json` wires the build, the function runtime, and the SPA rewrite.
+`/api/run`, `/api/tts`, `/api/contact`, `/api/agent`, `/api/mission`, `/api/lab`,
+`/api/github`, `/api/stt`, `/api/founder`). All keys stay **server-side** — they
+are read from environment variables inside the functions and never reach the
+browser bundle. `vercel.json` wires the build, the function runtime, and the SPA
+rewrite. The repo is on GitHub at `thekushagraa-collab/kushagraos` (Option B).
 
 > ⚠️ You must do the deploy yourself — it authenticates with **your** Vercel
 > account, and the API key must be entered into **your** Vercel project settings
@@ -44,6 +46,7 @@ vercel env add GROQ_API_KEY
 #    (optional overrides / extras — only if you use them)
 # vercel env add GROQ_MODEL            # e.g. llama-3.3-70b-versatile
 # vercel env add WEB3FORMS_ACCESS_KEY  # real contact-form email
+# vercel env add FOUNDER_KEY           # Founder Mode passphrase (Phase H) — pick a strong value
 
 # 6. Ship to production (re-deploys with the env vars baked in)
 vercel --prod
@@ -62,10 +65,12 @@ vercel --prod
 ## Required / optional environment variables
 | Variable | Required | Purpose |
 |---|---|---|
-| `GROQ_API_KEY` | **Yes** | The brain for `/api/ask` + `/api/run` (Groq, `gsk_…`). Without it everything still works via graceful demo fallback. |
-| `GROQ_MODEL` | No | Override the model (default `llama-3.3-70b-versatile`). |
+| `GROQ_API_KEY` | **Yes** | The brain for `/api/ask` + `/api/run` + agents/mission/lab, AND Whisper STT (`/api/stt`). Without it everything still works via graceful demo fallback (and voice STT falls back to the browser Web Speech API). |
+| `GROQ_MODEL` | No | Override the chat model (default `llama-3.3-70b-versatile`). |
 | `GEMINI_API_KEY` | No | Fallback provider + powers `/api/tts` voice-out if set. |
 | `WEB3FORMS_ACCESS_KEY` | No | Real contact-form email; otherwise the form shows its success toast only. |
+| `GITHUB_TOKEN` | No | Raises the unauthenticated rate limit for `/api/github` (read-only public repos). |
+| `FOUNDER_KEY` | No | Passphrase that unlocks **Founder Mode** (`/api/founder`). If unset, Founder Mode is **sealed** (every attempt denied) — the secure default. Set a strong value to enable it in production. |
 
 ## Verify after deploy
 ```bash

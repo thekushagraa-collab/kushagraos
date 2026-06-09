@@ -137,14 +137,25 @@ Marketplace + Client Mode + simulated integrations + Founder Mode + voice/growth
 > Also fixed two pre-existing build blockers surfaced by `tsc -b` (JSX namespace in IntegrationsApp, a union→Record cast in AutomationCenter).
 - **DoD:** founder route gated (no key → denied); absent from public "login as"; tests green. ✅
 
-## PHASE I — Voice + Growth hooks + a11y/perf + Deploy
+## ✅ PHASE I — Voice + Growth hooks + a11y/perf + Deploy — SHIPPED (build complete)
 **Goal:** ship it, and make every demo a lead magnet.
-- **Voice:** Groq Whisper STT (voice-in) + browser `speechSynthesis` (voice-out) + live transcript; polish AYRA states.
-- **Growth hooks:** every artifact's CTA + capture the visitor's typed inputs as a warm lead signal +
-  downloadable/shareable **branded** PDF/PNG (same templates → viral surface).
-- **a11y + perf:** focus order, landmarks, AA contrast both themes, CWV budgets; full Playwright harness green.
-- **Deploy:** Vercel (free), keys in Vercel env (Groq now; Gemini later for premium voice).
-- **DoD:** full `npx playwright test` green; Lighthouse pass; live URL.
+> **Voice:** Groq Whisper STT (`whisper-large-v3`) via `/api/stt` — client records with MediaRecorder,
+> sends base64 audio as JSON (reuses the JSON middleware; rate-limited, 15s timeout, 950KB cap), graceful
+> no-key/error fallback to Web Speech / typed input. `src/assistant/useWhisper.ts` + VoiceAssistant wired;
+> voice-out stays browser `speechSynthesis`.
+> **Growth hooks:** `src/lib/leads.ts` captures real typed intent (agent/mission/client/lab/run/ask) to
+> localStorage ONLY (privacy-preserving, capped 40 / 240 chars, deduped) and surfaces it in Founder Mode's
+> "Lead signals" card. `src/lib/shareCard.ts` renders a branded 1200×630 OG PNG straight to canvas (no deps,
+> no external calls, locked Fraunces/Geist Mono/General Sans, always luxe-dark) → download from every artifact.
+> **a11y:** skip-link → `#main`, landmarks, focus-visible styles. **perf:** `manualChunks` code-splitting
+> (react / motion / index chunks confirmed in the build).
+> **Deploy:** `docs/DEPLOY.md` + `vercel.json` ready; set `GROQ_API_KEY` + `FOUNDER_KEY` (+ optional
+> `WEB3FORMS_ACCESS_KEY`) in Vercel env.
+> Verified: full suite **98 passed / 0 failed / 6 skipped** (desktop + mobile). New `tests/phase-i.spec.ts`
+> covers skip-link, `/api/stt` graceful-empty, voice twin input+mic, branded image download on every artifact,
+> typed-intent → Founder lead signal. (Caveat: a live-network worker can dangle at teardown → 300s force-kill
+> grace, exit still 0 — documented, not a failure.)
+- **DoD:** full `npx playwright test` green ✅; a11y/perf in place ✅; **live URL = pending user Vercel deploy.**
 
 ---
 

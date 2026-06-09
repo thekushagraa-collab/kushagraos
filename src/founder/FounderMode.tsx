@@ -9,6 +9,7 @@
 import { motion } from "framer-motion";
 import { useOS } from "../lib/store";
 import { getVisitState } from "../lib/visitor";
+import { getLeads } from "../lib/leads";
 import { BUILD_PHASES } from "./founder";
 import { riseIn, stagger } from "../lib/motion";
 import "./founder.css";
@@ -36,6 +37,7 @@ export function FounderMode() {
   if (!isUnlocked) return null;
 
   const visit = getVisitState();
+  const leads = getLeads();
   const live = INTEGRATIONS.filter((i) => status?.[i.key]).length;
 
   return (
@@ -119,6 +121,33 @@ export function FounderMode() {
               <div><dt className="mono">MOTION</dt><dd>{motionOn ? "On" : "Off"}</dd></div>
               <div><dt className="mono">BUILD</dt><dd>{import.meta.env.MODE}</dd></div>
             </dl>
+          </motion.section>
+
+          {/* Lead signals -------------------------------------------------- */}
+          <motion.section
+            className="founder__card founder__card--wide"
+            data-testid="founder-leads"
+            variants={riseIn}
+          >
+            <div className="founder__card-head">
+              <h2 className="founder__card-title">Lead signals</h2>
+              <span className="founder__count mono">{leads.length} captured</span>
+            </div>
+            {leads.length === 0 ? (
+              <p className="founder__empty mono">
+                No signals yet — visitor inputs (agent prompts, mission goals, client
+                requests) land here as warm intent.
+              </p>
+            ) : (
+              <ul className="founder__signals">
+                {leads.slice(0, 8).map((l, i) => (
+                  <li key={`${l.at}-${i}`} className="founder__signal">
+                    <span className="founder__signal-src mono">{l.source.toUpperCase()}</span>
+                    <span className="founder__signal-text">{l.text}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </motion.section>
 
           {/* Build timeline ----------------------------------------------- */}

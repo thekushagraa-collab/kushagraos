@@ -387,9 +387,49 @@
 .founder__phase[data-state="shipped"] .founder__phase-id { color: var(--signal); }
 .founder__phase[data-state="active"] .founder__phase-state { color: var(--accent-strong); }
 
+.founder__empty {
+  margin: var(--space-4) 0 0;
+  font-size: var(--text-mono-sm);
+  line-height: var(--leading-body);
+  color: var(--faint);
+}
+
+.founder__signals {
+  list-style: none;
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.founder__signal {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  align-items: baseline;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+
+.founder__signal-src {
+  font-size: var(--text-mono-xs);
+  letter-spacing: var(--tracking-label);
+  color: var(--signal);
+}
+
+.founder__signal-text {
+  font-size: var(--text-sm);
+  color: var(--text-dim);
+  line-height: var(--leading-snug);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 @media (max-width: 760px) {
   .founder__grid { grid-template-columns: 1fr; }
   .founder__head { flex-direction: column; }
   .founder__pill { grid-template-columns: auto 1fr auto; }
   .founder__pill-note { display: none; }
+  .founder__signal { grid-template-columns: 1fr; gap: var(--space-1); }
 }

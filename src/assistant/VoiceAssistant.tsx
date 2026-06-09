@@ -11,6 +11,7 @@ import { useOS } from "../lib/store";
 import { cn } from "../lib/cn";
 import { askAssistant } from "./askAssistant";
 import { useMic } from "./useMic";
+import { useWhisper } from "./useWhisper";
 import { useTTS } from "./useTTS";
 import "./voice-assistant.css";
 
@@ -55,14 +56,30 @@ export function VoiceAssistant() {
   );
 
   const mic = useMic(ask);
+  const whisper = useWhisper(ask);
 
-  const status = mic.listening
+  // Prefer Groq Whisper (server STT, works in every browser); fall back to the
+  // Web Speech API where MediaRecorder/getUserMedia is unavailable.
+  const useServerVoice = whisper.supported;
+  const voiceSupported = whisper.supported || mic.supported;
+  const listening = useServerVoice ? whisper.recording : mic.listening;
+  const toggleVoice = () => {
+    if (useServerVoice) {
+      whisper.recording ? whisper.stop() : void whisper.start();
+    } else {
+      mic.listening ? mic.stop() : mic.start();
+    }
+  };
+
+  const status = listening
     ? "Listening…"
-    : thinking
-      ? "Thinking…"
-      : speaking
-        ? "Speaking…"
-        : "Ask me anything";
+    : whisper.transcribing
+      ? "Transcribing…"
+      : thinking
+        ? "Thinking…"
+        : speaking
+          ? "Speaking…"
+          : "Ask me anything";
 
   return (
     <AnimatePresence>
@@ -79,7 +96,7 @@ export function VoiceAssistant() {
         >
           <header className="assistant__head">
             <span className="assistant__title mono">
-              <span className={cn("assistant__orb", (mic.listening || speaking) && "assistant__orb--live")} aria-hidden="true" />
+              <span className={cn("assistant__orb", (listening || speaking) && "assistant__orb--live")} aria-hidden="true" />
               VOICE TWIN
             </span>
             <span className="assistant__status mono">{status}</span>
@@ -115,16 +132,17 @@ export function VoiceAssistant() {
             className="assistant__input-row"
             onSubmit={(e) => { e.preventDefault(); ask(draft); }}
           >
-            {mic.supported && (
+            {voiceSupported && (
               <button
                 type="button"
-                className={cn("assistant__mic", mic.listening && "assistant__mic--on")}
+                className={cn("assistant__mic", listening && "assistant__mic--on")}
                 data-testid="assistant-mic"
-                aria-pressed={mic.listening}
-                aria-label={mic.listening ? "Stop listening" : "Push to talk"}
-                onClick={() => (mic.listening ? mic.stop() : mic.start())}
+                aria-pressed={listening}
+                aria-label={listening ? "Stop listening" : "Push to talk"}
+                disabled={whisper.transcribing}
+                onClick={toggleVoice}
               >
-                {mic.listening ? "■" : "🎙"}
+                {listening ? "■" : "🎙"}
               </button>
             )}
             <input
@@ -133,7 +151,7 @@ export function VoiceAssistant() {
               type="text"
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
-              placeholder={mic.supported ? "Hold the mic or type…" : "Type your question…"}
+              placeholder={voiceSupported ? "Hold the mic or type…" : "Type your question…"}
               maxLength={600}
               aria-label="Ask the voice twin"
             />

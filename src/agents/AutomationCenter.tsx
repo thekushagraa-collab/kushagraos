@@ -10,6 +10,7 @@ import { AGENTS, getAgent, runAgentClient, type AgentId, type AgentReply } from 
 import { ArtifactFrame } from "./ArtifactFrame";
 import { AgentArtifact } from "./AgentArtifact";
 import { MissionMode } from "./MissionMode";
+import { recordLead } from "../lib/leads";
 import "./automation-center.css";
 
 const MIN_RUN_MS = 1200;
@@ -33,6 +34,7 @@ export function AutomationCenter() {
 
   const run = useCallback((id: AgentId, value: string) => {
     if (!value.trim()) return;
+    recordLead("agent", value);
     abortRef.current?.abort();
     const ctrl = new AbortController();
     abortRef.current = ctrl;

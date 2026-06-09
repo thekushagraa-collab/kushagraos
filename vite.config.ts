@@ -10,6 +10,7 @@ import { runMission } from "./api/_lib/missionCore";
 import { runLab } from "./api/_lib/labCore";
 import { runGithub } from "./api/_lib/githubCore";
 import { runFounder } from "./api/_lib/founderCore";
+import { runStt } from "./api/_lib/sttCore";
 import { readJson, callerKey, sendJson } from "./api/_lib/node";
 
 /* Serve the /api functions during `vite dev` AND `vite preview` so the voice
@@ -57,6 +58,10 @@ function devApi(): Connect.NextHandleFunction {
         const out = await runFounder(await readJson(r), callerKey(r));
         return sendJson(res as ServerResponse, out.status, out.json);
       }
+      if (r.method === "POST" && url.startsWith("/api/stt")) {
+        const out = await runStt(await readJson(r), callerKey(r));
+        return sendJson(res as ServerResponse, out.status, out.json);
+      }
     } catch {
       return sendJson(res as ServerResponse, 500, { error: "server_error" });
     }
@@ -85,5 +90,18 @@ export default defineConfig(({ mode }) => {
         },
       },
     ],
+    build: {
+      // Split long-lived vendor code into its own cacheable chunks so a content
+      // change to app code doesn't bust the (large, stable) framework download.
+      rollupOptions: {
+        output: {
+          manualChunks(id: string) {
+            if (/node_modules\/(react|react-dom|scheduler)\//.test(id)) return "react";
+            if (/node_modules\/(framer-motion|motion|motion-dom|motion-utils)\//.test(id)) return "motion";
+            return undefined;
+          },
+        },
+      },
+    },
   };
 });

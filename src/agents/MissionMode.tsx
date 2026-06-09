@@ -9,6 +9,7 @@
 
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { ArtifactFrame } from "./ArtifactFrame";
+import { recordLead } from "../lib/leads";
 import {
   MISSION_ORDER, MISSION_EXAMPLES, MISSION_IDENTITY, missionAgentMeta,
   runMissionClient, type MissionPlan, type MissionReply,
@@ -57,6 +58,7 @@ export function MissionMode({ onBack }: { onBack: () => void }) {
   const run = useCallback((value: string) => {
     const trimmed = value.trim();
     if (!trimmed) return;
+    recordLead("mission", trimmed);
     abortRef.current?.abort();
     clearReveal();
     const ctrl = new AbortController();

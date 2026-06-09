@@ -104,6 +104,23 @@
 .artifact__cta:active { transform: translateY(0); }
 .artifact__cta:focus-visible { outline: 2px solid var(--af-accent); outline-offset: 2px; }
 
+.artifact__actions { display: flex; align-items: center; gap: 10px; flex: none; }
+.artifact__share {
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--text-dim, #c7cad2);
+  background: transparent;
+  border: 1px solid var(--hairline-strong, rgba(236, 238, 242, 0.14));
+  border-radius: 10px;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.18s ease, color 0.18s ease;
+}
+.artifact__share:hover { transform: translateY(-1px); color: var(--text, #eceef2); border-color: var(--af-accent); }
+.artifact__share:active { transform: translateY(0); }
+.artifact__share:disabled { opacity: 0.6; cursor: progress; }
+.artifact__share:focus-visible { outline: 2px solid var(--af-accent); outline-offset: 2px; }
+
 /* ---- generic artifact primitives --------------------------------------- */
 .af-row { display: flex; flex-direction: column; gap: 9px; }
 .af-label {

@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SERVICES } from "../content/content";
 import { takeClientContext } from "./clientContext";
+import { recordLead } from "../lib/leads";
 import "./client.css";
 
 /* Replace with the real scheduling link when live. Opens in a new tab. */
@@ -62,6 +63,7 @@ export function ClientMode() {
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const intent = tab; // proposal | requirements | pricing
+    recordLead("client", `[${intent}] ${message}`);
     const body = email ? `${message}\n\nReach me at: ${email}` : message;
     void fetch("/api/contact", {
       method: "POST",

@@ -52,9 +52,10 @@ export function Shell() {
 
   return (
     <>
+      <a className="skip-link" href="#main">Skip to content</a>
       {/* Landmark only — `display: contents` generates no box, so the OS layout
           (fixed menubar/dock, full-height mobile panels) is unaffected. */}
-      <main aria-label="KushagraOS" style={{ display: "contents" }}>
+      <main id="main" tabIndex={-1} aria-label="KushagraOS" style={{ display: "contents" }}>
         {isMobile ? <MobileHome /> : <Desktop />}
       </main>
       <CommandBar />
