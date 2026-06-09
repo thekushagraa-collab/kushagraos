@@ -1,0 +1,58 @@
+.motion-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 4px 4px 4px 10px;
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--radius-full);
+  background: var(--surface);
+  color: var(--muted);
+  transition: color var(--dur-fast) var(--ease-out-quart),
+    border-color var(--dur-fast) var(--ease-out-quart);
+}
+
+.motion-toggle:hover {
+  color: var(--text);
+  border-color: var(--signal);
+}
+
+.motion-toggle__label {
+  font-size: var(--text-mono-xs);
+  letter-spacing: var(--tracking-label);
+}
+
+.motion-toggle__track {
+  position: relative;
+  width: 34px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  background: var(--surface-3);
+  border: 1px solid var(--hairline-strong);
+  flex: none;
+}
+
+.motion-toggle__thumb {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 14px;
+  height: 14px;
+  border-radius: var(--radius-full);
+  background: var(--faint);
+  will-change: transform;
+}
+
+/* ON state: thumb lit with the signal accent, track tinted. */
+.motion-toggle[data-on="true"] .motion-toggle__track {
+  background: var(--signal-wash);
+  border-color: var(--signal);
+}
+
+.motion-toggle[data-on="true"] .motion-toggle__thumb {
+  background: var(--signal);
+  box-shadow: 0 0 8px 1px var(--glow-signal);
+}
+
+.motion-toggle[data-on="true"] {
+  color: var(--signal);
+}

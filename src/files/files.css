@@ -1,0 +1,100 @@
+/* ============================================================================
+   Files — an in-OS document viewer. Two-pane (index + reader). The document
+   reads like a real, well-set paper: serif display headings, mono labels, tight
+   editorial rhythm. Motion is transform/opacity only.
+   ========================================================================== */
+
+.files { display: grid; grid-template-columns: 200px 1fr; gap: 18px; align-items: start; }
+
+/* ---- index ------------------------------------------------------------- */
+.files__index { display: flex; flex-direction: column; gap: 10px; position: sticky; top: 0; }
+.files__index-label { font-size: 10px; letter-spacing: 0.16em; color: var(--muted, #8b8f99); }
+.files__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.files__item {
+  width: 100%;
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 9px;
+  text-align: left;
+  padding: 10px 12px; border-radius: 11px; cursor: pointer;
+  color: var(--text, #eceef2);
+  background: var(--surface, #101015);
+  border: 1px solid var(--hairline, rgba(236, 238, 242, 0.08));
+  transition: border-color 0.18s ease, transform 0.18s ease, background 0.18s ease;
+}
+.files__item:hover { transform: translateX(2px); border-color: color-mix(in oklab, var(--signal, #bfe9ff) 35%, transparent); }
+.files__item[data-active="true"] {
+  border-color: color-mix(in oklab, var(--signal, #bfe9ff) 50%, transparent);
+  background: color-mix(in oklab, var(--signal, #bfe9ff) 8%, var(--surface, #101015));
+}
+.files__item:focus-visible { outline: 2px solid var(--signal, #bfe9ff); outline-offset: 2px; }
+.files__item-glyph { color: var(--signal, #bfe9ff); font-size: 13px; }
+.files__item-title { font-size: 13.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.files__item-kind { font-size: 9px; letter-spacing: 0.1em; color: var(--muted, #8b8f99); }
+
+/* ---- viewer ------------------------------------------------------------ */
+.files__viewer {
+  border-radius: 16px;
+  background: var(--surface, #101015);
+  border: 1px solid var(--hairline, rgba(236, 238, 242, 0.08));
+  box-shadow: 0 22px 54px -40px rgba(0, 0, 0, 0.8);
+  overflow: hidden;
+}
+
+.doc {
+  display: flex; flex-direction: column; gap: 22px;
+  padding: 30px 32px;
+  animation: doc-fade 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes doc-fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+html[data-motion="off"] .doc { animation: none; }
+
+.doc__masthead { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-bottom: 18px; border-bottom: 1px solid var(--hairline, rgba(236, 238, 242, 0.1)); }
+.doc__name { font-family: var(--font-display, "Fraunces", Georgia, serif); font-size: clamp(2rem, 1.4rem + 2vw, 3rem); font-weight: 600; letter-spacing: -0.03em; line-height: 1; }
+.doc__name--case { font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.2rem); }
+.doc__role { font-size: 11px; letter-spacing: 0.18em; color: var(--signal, #bfe9ff); margin-top: 8px; }
+.doc__download {
+  flex: none; font-size: 12px; font-weight: 600;
+  color: var(--bg, #08080c); background: var(--signal, #bfe9ff);
+  border: 0; border-radius: 10px; padding: 9px 15px; cursor: pointer;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), filter 0.18s ease;
+}
+.doc__download:hover { transform: translateY(-1px); filter: brightness(1.08); }
+.doc__download:focus-visible { outline: 2px solid var(--signal, #bfe9ff); outline-offset: 2px; }
+
+.doc__summary { font-family: var(--font-display, "Fraunces", Georgia, serif); font-size: 18px; line-height: 1.5; color: color-mix(in oklab, var(--text, #eceef2) 92%, var(--signal, #bfe9ff)); }
+
+.doc__section { display: flex; flex-direction: column; gap: 12px; }
+.doc__h2 { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted, #8b8f99); font-family: var(--font-mono, "Geist Mono", ui-monospace, monospace); }
+
+.doc__grid2 { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.doc__line { display: flex; flex-direction: column; gap: 2px; padding: 10px 13px; border-radius: 10px; background: var(--surface-2, #16161d); border: 1px solid var(--hairline, rgba(236, 238, 242, 0.07)); }
+.doc__line-key { font-weight: 600; font-size: 13.5px; }
+.doc__line-val { font-size: 12.5px; color: var(--muted, #8b8f99); line-height: 1.45; }
+
+.doc__work { display: flex; flex-direction: column; gap: 3px; padding: 12px 0; border-bottom: 1px dashed var(--hairline, rgba(236, 238, 242, 0.1)); }
+.doc__work-title { font-family: var(--font-display, "Fraunces", Georgia, serif); font-weight: 600; font-size: 16px; }
+.doc__work-tag { font-size: 12.5px; color: var(--signal, #bfe9ff); }
+.doc__work-out { font-size: 13.5px; line-height: 1.5; color: var(--muted, #8b8f99); }
+
+.doc__timeline { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.doc__entry { display: grid; grid-template-columns: 84px 1fr; gap: 4px 14px; }
+.doc__entry-date { grid-row: span 2; font-size: 11px; color: var(--signal, #bfe9ff); padding-top: 2px; }
+.doc__entry-title { font-weight: 600; font-size: 14px; }
+.doc__entry-note { font-size: 12.5px; line-height: 1.5; color: var(--muted, #8b8f99); }
+
+.doc__contacts { list-style: none; margin: 0; padding: 0; display: flex; gap: 16px; flex-wrap: wrap; }
+.doc__contact { font-size: 12px; color: var(--signal, #bfe9ff); text-decoration: none; }
+.doc__contact:hover { text-decoration: underline; }
+
+.doc__prose { font-size: 14.5px; line-height: 1.6; }
+.doc__prose--em { font-family: var(--font-display, "Fraunces", Georgia, serif); font-style: italic; color: color-mix(in oklab, var(--text, #eceef2) 90%, var(--signal, #bfe9ff)); }
+.doc__stack { list-style: none; margin: 0; padding: 0; display: flex; gap: 8px; flex-wrap: wrap; }
+.doc__chip { font-size: 11.5px; padding: 5px 11px; border-radius: 999px; color: var(--muted, #8b8f99); background: var(--surface-2, #16161d); border: 1px solid var(--hairline, rgba(236, 238, 242, 0.08)); }
+.doc__empty { color: var(--muted, #8b8f99); padding: 30px; }
+
+@media (max-width: 620px) {
+  .files { grid-template-columns: 1fr; }
+  .files__index { position: static; }
+  .files__list { flex-direction: row; flex-wrap: wrap; }
+  .files__item { width: auto; }
+  .doc__grid2 { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,18 @@
+.film-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 2; /* subtle texture on top of content, ties the layers together */
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  mix-blend-mode: var(--grain-blend);
+  overflow: hidden; /* clip the scaled noise tile so it never causes scroll */
+  transition: opacity var(--dur-slow) var(--ease-out-quart);
+}
+
+.film-grain__svg {
+  /* exact-fit; feTurbulence stitchTiles="stitch" keeps the noise seamless,
+     so no oversizing/transform is needed (and none can leak into scroll). */
+  display: block;
+  width: 100%;
+  height: 100%;
+}

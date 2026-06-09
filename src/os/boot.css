@@ -1,0 +1,158 @@
+/* Boot — full-screen opening over the Signal Field (which shows through). */
+
+.boot {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-cmdk);
+  display: grid;
+  place-items: center;
+  padding: var(--shell-pad);
+  background: radial-gradient(
+    120% 120% at 50% 42%,
+    color-mix(in oklab, var(--bg) 30%, transparent),
+    color-mix(in oklab, var(--bg) 82%, transparent) 70%
+  );
+}
+
+.boot__core {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  text-align: center;
+  max-width: 680px;
+  width: 100%;
+}
+
+.boot__status {
+  font-size: var(--text-mono-xs);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--signal);
+}
+
+.boot__name {
+  font-family: var(--font-display);
+  font-weight: var(--weight-display-bold);
+  font-size: clamp(2.75rem, 1rem + 9vw, 7.5rem);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: var(--text);
+}
+
+.boot__name-text {
+  display: inline-block;
+  background-image: linear-gradient(
+    180deg,
+    var(--text) 0%,
+    color-mix(in oklab, var(--text) 68%, var(--muted)) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 2px 34px var(--hero-glow));
+}
+
+.boot__skip {
+  font-size: var(--text-mono-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--muted);
+  padding: 6px 14px;
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--radius-full);
+  transition: color var(--dur-fast) var(--ease-out-quart),
+    border-color var(--dur-fast) var(--ease-out-quart);
+}
+.boot__skip:hover { color: var(--text); border-color: var(--signal); }
+
+/* ---- Audience chooser --------------------------------------------------- */
+.boot__choose {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+}
+
+.boot__prompt {
+  font-size: var(--text-mono-xs);
+  letter-spacing: var(--tracking-label);
+  color: var(--faint);
+}
+
+.boot__audiences {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.boot__audience {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  width: 100%;
+  padding: var(--space-4);
+  text-align: left;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--surface-2) 60%, transparent),
+    color-mix(in oklab, var(--surface) 90%, transparent)
+  );
+  box-shadow: inset 0 1px 0 var(--hairline-strong);
+  transition: transform var(--dur-normal) var(--ease-out-expo),
+    border-color var(--dur-fast) var(--ease-out-quart);
+}
+.boot__audience:hover {
+  transform: translateY(-3px);
+  border-color: var(--signal);
+}
+.boot__audience:active { transform: translateY(-1px); }
+
+.boot__audience-label {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+.boot__audience-line {
+  font-size: var(--text-mono-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--muted);
+}
+
+/* ---- Scan indicator (provable motion) ----------------------------------- */
+.boot__scan {
+  position: relative;
+  width: min(280px, 60vw);
+  height: 2px;
+  border-radius: var(--radius-full);
+  background: var(--rail-dim);
+  overflow: hidden;
+  margin-top: var(--space-3);
+}
+
+.boot__scan-bead {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: linear-gradient(90deg, transparent, var(--signal), transparent);
+  will-change: transform;
+  animation: boot-scan 1.8s var(--ease-in-out) infinite;
+}
+
+@keyframes boot-scan {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(350%); }
+}
+
+@media (max-width: 540px) {
+  .boot__audiences { grid-template-columns: 1fr; }
+}

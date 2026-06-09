@@ -1,0 +1,370 @@
+/* ============================================================================
+   Foundation surface — precision-instrument readout. Mobile-first.
+   ========================================================================== */
+
+.foundation {
+  position: relative;
+  z-index: 1; /* content layer above the Signal Field (z-index 0) */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ---- Status bar --------------------------------------------------------- */
+.foundation__bar {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-menubar);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--shell-pad);
+  border-bottom: 1px solid var(--hairline);
+  background: color-mix(in oklab, var(--bg) 78%, transparent);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+}
+
+.foundation__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-mono-sm);
+  letter-spacing: var(--tracking-wide);
+  color: var(--text);
+}
+
+.foundation__pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-full);
+  background: var(--signal);
+  box-shadow: 0 0 8px 1px var(--glow-signal);
+  animation: kos-pulse 2.6s var(--ease-in-out) infinite;
+}
+
+@keyframes kos-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.82); }
+}
+
+.foundation__bar-mid {
+  font-size: var(--text-mono-xs);
+  letter-spacing: var(--tracking-label);
+  color: var(--faint);
+}
+
+.foundation__bar-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* ---- Main --------------------------------------------------------------- */
+.foundation__main {
+  flex: 1;
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 1rem + 7vw, 6.5rem) var(--shell-pad) var(--space-9);
+}
+
+/* ---- Hero --------------------------------------------------------------- */
+.hero {
+  position: relative;
+  margin-bottom: var(--space-section);
+}
+
+/* large soft light-bloom behind the wordmark — it emerges from light, not flat
+   black. Cool --signal tint, low opacity, heavily blurred (atmosphere, not glare). */
+.hero::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: -16%;
+  top: -55%;
+  width: 100%;
+  height: 230%;
+  background: radial-gradient(closest-side, var(--hero-glow), transparent 70%);
+  filter: blur(44px);
+  pointer-events: none;
+}
+
+.hero__label {
+  font-size: var(--text-mono-xs);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--signal);
+  margin-bottom: var(--space-5);
+}
+
+.hero__name {
+  font-family: var(--font-display);
+  font-weight: var(--weight-display-bold);
+  font-size: var(--text-display);
+  line-height: 0.88;
+  letter-spacing: -0.04em;
+  margin-bottom: var(--space-4);
+}
+
+/* Wordmark: faint vertical ink gradient + a periodic signal light-sweep that
+   crosses every ~12s (the "signal" touches the name). transform-free, clipped
+   to the glyphs. One restrained hero animation, not a constant shimmer. */
+.hero__name-text {
+  display: inline-block;
+  background-image:
+    linear-gradient(
+      100deg,
+      transparent 42%,
+      var(--signal-strong) 50%,
+      transparent 58%
+    ),
+    linear-gradient(
+      180deg,
+      var(--text) 0%,
+      color-mix(in oklab, var(--text) 72%, var(--muted)) 100%
+    );
+  background-size: 280% 100%, 100% 100%;
+  background-position: -160% 0, 0 0;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  /* faint halo so the letters sit in light, not on flat black */
+  filter: drop-shadow(0 1px 28px var(--hero-glow));
+  animation: hero-sweep 12s var(--ease-in-out) infinite;
+}
+
+@keyframes hero-sweep {
+  0%, 78% { background-position: -160% 0, 0 0; }
+  100% { background-position: 160% 0, 0 0; }
+}
+
+html[data-motion="off"] .hero__name-text { animation: none; }
+
+.hero__role {
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-label);
+  color: var(--muted);
+  margin-bottom: var(--space-6);
+}
+
+.hero__line {
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: var(--tracking-snug);
+  color: var(--text-dim);
+  max-width: 28ch;
+}
+
+.hero__line em {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: var(--weight-display-bold);
+  color: var(--accent-strong);
+}
+
+/* ---- System grid (bento) ------------------------------------------------ */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+@media (min-width: 760px) {
+  .grid {
+    grid-template-columns: 1.25fr 1fr;
+    grid-template-areas:
+      "palette type"
+      "palette modules";
+  }
+  .panel--palette { grid-area: palette; }
+  .panel--type { grid-area: type; }
+  .panel--modules { grid-area: modules; }
+}
+
+@media (min-width: 1080px) {
+  .grid {
+    grid-template-columns: 1.3fr 1fr 1fr;
+    grid-template-areas: "palette type modules";
+  }
+}
+
+/* ---- Panels ------------------------------------------------------------- */
+.panel {
+  position: relative;
+  padding: var(--space-5);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+  /* gradient surface + inset top highlight = elevated, lit-from-above depth */
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--surface-2) 65%, transparent),
+    color-mix(in oklab, var(--surface) 92%, transparent)
+  );
+  box-shadow:
+    inset 0 1px 0 var(--hairline-strong),       /* 1px lighter top-edge hairline */
+    inset 0 18px 44px -22px var(--signal-wash),  /* faint inner top glow */
+    var(--shadow-elevated),                       /* layered ambient/key shadow */
+    0 0 34px -14px var(--glow-signal);            /* subtle cool-tinted halo */
+  transition: transform var(--dur-normal) var(--ease-out-expo),
+    border-color var(--dur-normal) var(--ease-out-quart);
+}
+
+.panel:hover {
+  transform: translateY(-3px);
+  border-color: var(--hairline-strong);
+}
+
+.panel__title {
+  font-size: var(--text-mono-xs);
+  letter-spacing: var(--tracking-label);
+  color: var(--faint);
+  padding-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
+  border-bottom: 1px solid var(--hairline);
+}
+
+/* ---- Palette ------------------------------------------------------------ */
+.swatches {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+.swatch__chip {
+  display: block;
+  height: 52px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--hairline-strong);
+  margin-bottom: var(--space-2);
+}
+
+.swatch__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--text-mono-xs);
+}
+
+.swatch__token { color: var(--text-dim); }
+.swatch__hex { color: var(--faint); letter-spacing: 0.04em; }
+
+/* ---- Typefaces ---------------------------------------------------------- */
+.specimens {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.specimen {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--hairline);
+}
+.specimen:last-child { border-bottom: 0; padding-bottom: 0; }
+
+.specimen__sample {
+  color: var(--text);
+  line-height: 1;
+}
+.spec--display {
+  font-family: var(--font-display);
+  font-weight: var(--weight-display-bold);
+  font-size: clamp(1.75rem, 1.2rem + 2vw, 2.4rem);
+  letter-spacing: -0.02em;
+}
+.spec--body {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2rem);
+}
+.spec--mono {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: clamp(1.1rem, 0.9rem + 1vw, 1.4rem);
+  color: var(--signal);
+  letter-spacing: 0.02em;
+}
+
+.specimen__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  text-align: right;
+  font-size: var(--text-mono-xs);
+  white-space: nowrap;
+}
+.specimen__face { color: var(--text-dim); }
+.specimen__role { color: var(--faint); letter-spacing: var(--tracking-wide); }
+
+/* ---- Modules checklist -------------------------------------------------- */
+.modules {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.module {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--hairline);
+  font-size: var(--text-mono-sm);
+}
+.module:last-child { border-bottom: 0; }
+
+.module__idx { color: var(--faint); }
+.module__name { color: var(--text-dim); }
+.module__state {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-mono-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--signal);
+}
+.module__state::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--signal);
+  box-shadow: 0 0 10px 1px var(--glow-signal);
+}
+
+/* ---- Footer ------------------------------------------------------------- */
+.foundation__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--shell-pad);
+  border-top: 1px solid var(--hairline);
+  font-size: var(--text-mono-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--faint);
+}
+
+.foundation__foot-hint { color: var(--muted); }
+
+@media (max-width: 680px) {
+  .foundation__bar-mid,
+  .foundation__foot-hint { display: none; }
+  .foundation__bar-controls { gap: var(--space-2); }
+  /* keep the switch, drop the word to save room next to the theme pill */
+  .motion-toggle__label { display: none; }
+  .motion-toggle { padding: 4px; }
+  .swatches { grid-template-columns: repeat(2, 1fr); }
+}

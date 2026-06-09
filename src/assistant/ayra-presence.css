@@ -1,0 +1,171 @@
+/* AYRA presence orb — luxury-AI signature, cool signal light, never neon. */
+
+.ayra-orb {
+  position: fixed;
+  right: clamp(16px, 2.2vw, 30px);
+  bottom: clamp(16px, 2.2vw, 30px);
+  z-index: 70;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ---- greeting label (left of the orb) ---------------------------------- */
+.ayra-orb__label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  padding: 9px 14px;
+  border-radius: 13px;
+  text-align: right;
+  background: color-mix(in oklab, var(--surface, #101015) 86%, transparent);
+  border: 1px solid var(--hairline, rgba(236, 238, 242, 0.08));
+  box-shadow:
+    0 14px 34px -18px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 color-mix(in oklab, #fff 7%, transparent);
+  backdrop-filter: blur(10px) saturate(1.1);
+  opacity: 1;
+  transform: translateX(0);
+  transition:
+    opacity 360ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 360ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ayra-orb__hello {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--signal, #bfe9ff);
+  opacity: 0.85;
+}
+.ayra-orb__cta {
+  font-size: 13px;
+  line-height: 1.2;
+  color: var(--text, #eceef2);
+  white-space: nowrap;
+}
+.ayra-orb__cta strong {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* hide the label on small screens + when the twin is open */
+@media (max-width: 700px) {
+  .ayra-orb__label { display: none; }
+}
+.ayra-orb[data-open] .ayra-orb__label {
+  opacity: 0;
+  transform: translateX(10px);
+  pointer-events: none;
+}
+
+/* ---- the disc (aura + core) -------------------------------------------- */
+.ayra-orb__disc {
+  position: relative;
+  flex: none;
+  width: 58px;
+  height: 58px;
+}
+
+.ayra-orb__aura {
+  position: absolute;
+  inset: -7px;
+  border-radius: 999px;
+  background: radial-gradient(
+    circle,
+    color-mix(in oklab, var(--signal, #bfe9ff) 40%, transparent) 0%,
+    transparent 68%
+  );
+  opacity: 0.6;
+  transform: scale(0.85);
+  animation: ayra-ping 3.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  will-change: transform, opacity;
+}
+
+.ayra-orb__core {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  border-radius: 999px;
+  background:
+    radial-gradient(125% 125% at 32% 24%, color-mix(in oklab, var(--signal, #bfe9ff) 20%, transparent), transparent 58%),
+    var(--surface-2, #16161d);
+  border: 1px solid color-mix(in oklab, var(--signal, #bfe9ff) 16%, var(--hairline, rgba(236, 238, 242, 0.1)));
+  box-shadow:
+    0 12px 30px -12px rgba(0, 0, 0, 0.75),
+    inset 0 1px 0 color-mix(in oklab, #fff 9%, transparent);
+  animation: ayra-breathe 5.5s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* waveform bars — AYRA's "voice" */
+.ayra-orb__bar {
+  width: 3px;
+  height: 18px;
+  border-radius: 2px;
+  background: linear-gradient(
+    to top,
+    color-mix(in oklab, var(--signal, #bfe9ff) 70%, transparent),
+    var(--signal, #bfe9ff)
+  );
+  transform: scaleY(0.45);
+  transform-origin: center;
+  animation: ayra-wave 1.5s ease-in-out infinite;
+}
+.ayra-orb__bar:nth-child(1) { animation-delay: 0ms; height: 14px; }
+.ayra-orb__bar:nth-child(2) { animation-delay: 180ms; height: 22px; }
+.ayra-orb__bar:nth-child(3) { animation-delay: 360ms; height: 16px; }
+.ayra-orb__bar:nth-child(4) { animation-delay: 120ms; height: 11px; }
+
+/* hover / focus — lift + brighten */
+.ayra-orb:hover .ayra-orb__core,
+.ayra-orb:focus-visible .ayra-orb__core {
+  transform: translateY(-2px) scale(1.04);
+  border-color: color-mix(in oklab, var(--signal, #bfe9ff) 38%, transparent);
+}
+.ayra-orb:focus-visible {
+  outline: none;
+}
+.ayra-orb:focus-visible .ayra-orb__disc {
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--signal, #bfe9ff) 35%, transparent);
+  border-radius: 999px;
+}
+.ayra-orb:active .ayra-orb__core {
+  transform: translateY(0) scale(0.96);
+}
+
+/* listening — faster, brighter waveform */
+.ayra-orb[data-listening] .ayra-orb__bar { animation-duration: 0.6s; }
+.ayra-orb[data-listening] .ayra-orb__aura { animation-duration: 1.6s; opacity: 0.85; }
+
+/* ---- keyframes (transform + opacity only) ------------------------------ */
+@keyframes ayra-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.045); }
+}
+@keyframes ayra-ping {
+  0% { transform: scale(0.82); opacity: 0.6; }
+  70% { transform: scale(1.32); opacity: 0; }
+  100% { transform: scale(1.32); opacity: 0; }
+}
+@keyframes ayra-wave {
+  0%, 100% { transform: scaleY(0.4); }
+  50% { transform: scaleY(1); }
+}
+
+/* ---- Motion policy: flatten ONLY when the in-app Motion control is OFF -- */
+html[data-motion="off"] .ayra-orb__aura,
+html[data-motion="off"] .ayra-orb__core,
+html[data-motion="off"] .ayra-orb__bar {
+  animation: none;
+}
+html[data-motion="off"] .ayra-orb__aura { opacity: 0.4; transform: scale(1); }
+html[data-motion="off"] .ayra-orb__bar { transform: scaleY(0.7); }

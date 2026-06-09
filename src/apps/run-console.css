@@ -1,0 +1,358 @@
+/* Shared chrome for the WORK apps (Flow / Atlas / Forge). */
+
+.run {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.run__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-width: 60ch;
+}
+.run__label {
+  font-size: var(--text-mono-xs);
+  letter-spacing: var(--tracking-label);
+  color: var(--signal);
+}
+.run__title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  letter-spacing: -0.02em;
+}
+.run__blurb {
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--text-dim);
+}
+
+/* ---- Pipeline track ----------------------------------------------------- */
+.run__track {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--surface-2) 55%, transparent),
+    transparent
+  );
+}
+/* connecting hairline behind the stages */
+.run__track::before {
+  content: "";
+  position: absolute;
+  left: var(--space-5);
+  right: var(--space-5);
+  top: 50%;
+  height: 1px;
+  background: var(--hairline-strong);
+  pointer-events: none;
+}
+
+.run__sweep {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 38%;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklab, var(--signal) 26%, transparent),
+    transparent
+  );
+}
+.run__track[data-running="true"] .run__sweep {
+  animation: run-sweep 1.05s linear infinite;
+}
+@keyframes run-sweep {
+  0% {
+    transform: translateX(-110%);
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(270%);
+    opacity: 0;
+  }
+}
+
+.run__stage {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+.run__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: var(--radius-full);
+  background: var(--surface);
+  border: 1px solid var(--hairline-strong);
+  box-shadow: 0 0 0 4px var(--surface);
+}
+.run__track[data-running="true"] .run__dot {
+  animation: run-dot 1.05s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.16s);
+}
+@keyframes run-dot {
+  0%,
+  100% {
+    transform: scale(1);
+    border-color: var(--hairline-strong);
+  }
+  40% {
+    transform: scale(1.35);
+    border-color: var(--signal);
+  }
+}
+.run__stage:last-child .run__dot {
+  border-color: var(--accent);
+}
+.run__stage-label {
+  font-size: var(--text-mono-xs);
+  letter-spacing: var(--tracking-label);
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+/* ---- Input form --------------------------------------------------------- */
+.run__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.run__input-label {
+  font-size: var(--text-mono-xs);
+  letter-spacing: var(--tracking-label);
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+.run__input {
+  width: 100%;
+  resize: vertical;
+  min-height: 3.2em;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--hairline-strong);
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  transition: border-color var(--duration-fast, 150ms) ease,
+    box-shadow var(--duration-fast, 150ms) ease;
+}
+.run__input::placeholder {
+  color: var(--faint);
+}
+.run__input:focus-visible {
+  outline: none;
+  border-color: var(--signal);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--signal) 22%, transparent);
+}
+
+.run__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.run__chip {
+  font-size: var(--text-mono-xs);
+  letter-spacing: 0.02em;
+  color: var(--text-dim);
+  padding: 5px 10px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--hairline);
+  background: var(--surface-2);
+  cursor: pointer;
+  transition: border-color 150ms ease, color 150ms ease, transform 150ms ease;
+}
+.run__chip:hover {
+  color: var(--text);
+  border-color: var(--signal);
+  transform: translateY(-1px);
+}
+.run__chip:focus-visible {
+  outline: none;
+  border-color: var(--signal);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--signal) 22%, transparent);
+}
+
+.run__bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.run__go {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  letter-spacing: 0.02em;
+  color: var(--bg, #0a0a0a);
+  background: var(--accent);
+  border: 1px solid var(--accent-strong);
+  padding: 8px 18px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: transform 150ms ease, filter 150ms ease, opacity 150ms ease;
+}
+.run__go:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+}
+.run__go:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--accent-wash);
+}
+.run__go:active:not(:disabled) {
+  transform: translateY(0);
+}
+.run__go:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.run__status {
+  font-size: var(--text-mono-xs);
+  letter-spacing: var(--tracking-label);
+  color: var(--muted);
+}
+.run__status[data-fallback="false"] {
+  color: var(--signal);
+}
+.run__status[data-fallback="true"] {
+  color: var(--accent-strong);
+}
+
+/* ---- Result slot -------------------------------------------------------- */
+.run__result {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+  background: color-mix(in oklab, var(--surface-2) 40%, transparent);
+  animation: run-result-in 360ms var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) both;
+}
+@keyframes run-result-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---- Result building blocks (shared by all three apps) ------------------ */
+.res__row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1, 4px);
+}
+.res__kicker {
+  font-size: var(--text-mono-xs);
+  letter-spacing: var(--tracking-label);
+  color: var(--signal);
+  text-transform: uppercase;
+}
+.res__card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--space-4);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+.res__card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.res__title {
+  font-family: var(--font-display);
+  font-size: var(--text-base, 1rem);
+  letter-spacing: -0.01em;
+}
+.res__meta {
+  font-family: var(--font-mono);
+  font-size: var(--text-mono-xs);
+  color: var(--accent-strong);
+  white-space: nowrap;
+}
+.res__text {
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--text-dim);
+}
+.res__muted {
+  font-size: var(--text-xs);
+  color: var(--muted);
+  line-height: 1.5;
+}
+.res__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.res__grid {
+  display: grid;
+  gap: var(--space-3);
+  grid-template-columns: 1fr;
+}
+@media (min-width: 560px) {
+  .res__grid--clips {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+/* Flow action channel pill */
+.res__channel {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  font-size: var(--text-mono-xs);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--signal);
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--hairline-strong);
+  background: var(--surface-2);
+}
+
+/* Atlas fit bar */
+.res__fit {
+  position: relative;
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--surface-2);
+  overflow: hidden;
+}
+.res__fit-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: linear-gradient(90deg, var(--signal), var(--accent));
+  border-radius: inherit;
+}

@@ -1,0 +1,59 @@
+/* Custom cursor: dot (1:1) + trailing glow ring. transform/opacity only.
+   Hidden until first move (cursor-active), reacts on hover/press. */
+
+.kos-cursor-dot,
+.kos-cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: var(--z-cursor);
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.kos-cursor-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-full);
+  background: var(--signal-strong);
+  transition: opacity var(--dur-fast) var(--ease-out-quart);
+}
+
+.kos-cursor-ring {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--signal);
+  box-shadow:
+    0 0 0 1px var(--signal-wash),
+    0 0 24px 4px var(--glow-signal);
+  /* the ring scale/opacity reacts to state; position comes from JS transform.
+     keep position transform out of transition (RAF-driven), animate scale via
+     a nested layer instead. */
+  transition: opacity var(--dur-fast) var(--ease-out-quart);
+}
+
+/* Visible once the pointer has moved */
+.cursor-active .kos-cursor-dot { opacity: 1; }
+.cursor-active .kos-cursor-ring { opacity: 0.9; }
+
+/* Over interactive targets: ring expands and softens, dot shrinks.
+   Scale is applied via a CSS custom property the ring multiplies in. */
+.kos-cursor-ring {
+  /* compose JS translate with a state-driven scale using individual props */
+  scale: var(--cursor-ring-scale, 1);
+  transition:
+    opacity var(--dur-fast) var(--ease-out-quart),
+    scale var(--dur-normal) var(--ease-spring);
+}
+
+.cursor-hover { --cursor-ring-scale: 1.55; }
+.cursor-hover .kos-cursor-dot { opacity: 0.5; }
+.cursor-press { --cursor-ring-scale: 0.85; }
+.cursor-press .kos-cursor-dot { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .kos-cursor-dot,
+  .kos-cursor-ring { display: none; }
+}

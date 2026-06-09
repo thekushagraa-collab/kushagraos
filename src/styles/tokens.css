@@ -1,0 +1,189 @@
+/* ============================================================================
+   KushagraOS — Design Tokens
+   Dual theme: Nocturne (night / graphite) · Atelier (day / ivory)
+   Theme is switched by setting `data-theme="night" | "day"` on <html>.
+   form = function: a refined, self-running system. Classy, never funky.
+   ========================================================================== */
+
+:root {
+  /* ---- Type families ---------------------------------------------------- */
+  --font-display: "Fraunces", "Times New Roman", serif;
+  --font-body: "General Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", "Cascadia Code", monospace;
+
+  /* ---- Fluid type scale (clamp: min, fluid, max) ------------------------ */
+  --text-mono-xs: 0.6875rem;                              /* 11px system labels */
+  --text-mono-sm: 0.75rem;                                /* 12px */
+  --text-xs: clamp(0.75rem, 0.72rem + 0.15vw, 0.8125rem);
+  --text-sm: clamp(0.875rem, 0.84rem + 0.18vw, 0.9375rem);
+  --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --text-lg: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+  --text-xl: clamp(1.75rem, 1.5rem + 1.2vw, 2.5rem);
+  --text-2xl: clamp(2.5rem, 1.9rem + 3vw, 4rem);
+  --text-display: clamp(2.75rem, 1rem + 9vw, 11rem);      /* KUSHAGRA wordmark */
+
+  /* ---- Type rhythm ------------------------------------------------------ */
+  --leading-tight: 0.95;
+  --leading-snug: 1.2;
+  --leading-body: 1.7;
+  --tracking-tight: -0.03em;
+  --tracking-snug: -0.01em;
+  --tracking-wide: 0.02em;
+  --tracking-label: 0.18em;                               /* uppercase mono labels */
+  --weight-display: 340;                                  /* Fraunces optical */
+  --weight-display-bold: 540;
+
+  /* ---- Spacing scale (8px base, intentional steps) ---------------------- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --space-10: 8rem;
+  --space-section: clamp(4rem, 3rem + 5vw, 9rem);
+
+  /* ---- Radii ------------------------------------------------------------ */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+  --radius-window: 14px;                                  /* OS app windows */
+  --radius-full: 999px;
+
+  /* ---- Motion (transform/opacity only; spring-leaning easings) ---------- */
+  --dur-instant: 90ms;
+  --dur-fast: 180ms;
+  --dur-normal: 320ms;
+  --dur-slow: 560ms;
+  --dur-boot: 900ms;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);       /* window open overshoot */
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* ---- Z-index layers (OS stacking) ------------------------------------- */
+  --z-grain: 1;
+  --z-content: 10;
+  --z-window: 100;
+  --z-window-focus: 200;
+  --z-dock: 500;
+  --z-menubar: 600;
+  --z-cmdk: 800;
+  --z-assistant: 900;
+  --z-cursor: 9999;
+
+  /* ---- Layout ----------------------------------------------------------- */
+  --hairline-gap: 88px;                                   /* 1px grid pitch */
+  --shell-pad: clamp(1.25rem, 0.5rem + 3vw, 3.5rem);
+  --menubar-h: 38px;
+  --dock-h: 72px;
+}
+
+/* ============================================================================
+   NOCTURNE — night / graphite (default)
+   ========================================================================== */
+:root,
+[data-theme="night"] {
+  color-scheme: dark;
+
+  --bg: #08080C;
+  --surface: #101015;
+  --surface-2: #16161D;
+  --surface-3: #1E1E26;
+  --text: #ECEEF2;
+  --text-dim: #C7CAD2;
+  --muted: #8B8F99;
+  --faint: #62656F;
+  --hairline: rgba(236, 238, 242, 0.07);
+  --hairline-strong: rgba(236, 238, 242, 0.14);
+
+  /* cool signal-light: the OS is alive. Workhorse cool accent for motion,
+     pulses, status, and most "active" hints. */
+  --signal: #BFE9FF;
+  --signal-strong: #E2F4FF;
+  --signal-wash: rgba(191, 233, 255, 0.10);
+
+  /* warm gold: RARE — reserved for the active app + primary CTA + the one
+     differentiator line. Appears only where attention must go. */
+  --accent: #C8A86B;
+  --accent-strong: #E3C68A;
+  --accent-wash: rgba(200, 168, 107, 0.12);
+
+  /* layered, color-tinted shadows */
+  --shadow-elevated:
+    0 1px 1px rgba(0, 0, 0, 0.55),
+    0 6px 16px rgba(0, 0, 0, 0.5),
+    0 18px 48px rgba(0, 0, 0, 0.45);
+  --shadow-floating:
+    0 2px 4px rgba(0, 0, 0, 0.65),
+    0 16px 40px rgba(0, 0, 0, 0.6),
+    0 40px 100px rgba(0, 0, 0, 0.55);
+
+  /* atmosphere targets (Signal Field reads these) */
+  --glow-signal: rgba(191, 233, 255, 0.22);
+  --glow-accent: rgba(200, 168, 107, 0.10);
+  --aurora-1: rgba(191, 233, 255, 0.16);
+  --aurora-2: rgba(200, 168, 107, 0.09);
+  --rail-dim: rgba(236, 238, 242, 0.08);
+  --hero-glow: rgba(191, 233, 255, 0.14);
+  --vignette: rgba(0, 0, 0, 0.42);
+  --grain-opacity: 0.06;
+  --grain-blend: overlay;
+}
+
+/* ============================================================================
+   ATELIER — day / ivory
+   ========================================================================== */
+[data-theme="day"] {
+  color-scheme: light;
+
+  --bg: #F4F2EC;
+  --surface: #FCFBF8;
+  --surface-2: #ECEAE2;
+  --surface-3: #E3E0D6;
+  --text: #14151A;
+  --text-dim: #33353D;
+  --muted: #5B5F69;
+  --faint: #8A8E98;
+  --hairline: rgba(20, 21, 26, 0.10);
+  --hairline-strong: rgba(20, 21, 26, 0.18);
+
+  --signal: #2D7FB8;
+  --signal-strong: #1F6699;
+  --signal-wash: rgba(45, 127, 184, 0.10);
+
+  --accent: #9A6B2F;
+  --accent-strong: #7A521F;
+  --accent-wash: rgba(154, 107, 47, 0.10);
+
+  --shadow-elevated:
+    0 1px 2px rgba(28, 30, 40, 0.06),
+    0 6px 16px rgba(28, 30, 40, 0.08),
+    0 18px 48px rgba(28, 30, 40, 0.10);
+  --shadow-floating:
+    0 2px 6px rgba(28, 30, 40, 0.08),
+    0 16px 40px rgba(28, 30, 40, 0.12),
+    0 40px 100px rgba(28, 30, 40, 0.14);
+
+  --glow-signal: rgba(45, 127, 184, 0.18);
+  --glow-accent: rgba(154, 107, 47, 0.08);
+  --aurora-1: rgba(45, 127, 184, 0.13);
+  --aurora-2: rgba(154, 107, 47, 0.08);
+  --rail-dim: rgba(20, 21, 26, 0.10);
+  --hero-glow: rgba(45, 127, 184, 0.10);
+  --vignette: rgba(20, 21, 26, 0.12);
+  --grain-opacity: 0.05;
+  --grain-blend: multiply;
+}
+
+/* Motion OFF (in-app control, not the OS setting): neutralize spring overshoot,
+   keep transitions instant-ish. Default state always animates. */
+:root[data-motion="off"] {
+  --ease-spring: var(--ease-out-quart);
+  --dur-boot: 1ms;
+  --dur-slow: 1ms;
+}

@@ -1,0 +1,185 @@
+.contact {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.contact__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-width: 60ch;
+}
+
+.contact__label {
+  font-size: var(--text-mono-xs);
+  letter-spacing: var(--tracking-label);
+  color: var(--signal);
+}
+
+.contact__title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  letter-spacing: -0.02em;
+}
+
+.contact__sub {
+  font-size: var(--text-sm);
+  color: var(--text-dim);
+}
+
+/* ---- Form -------------------------------------------------------------- */
+.contact__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--surface-2) 55%, transparent),
+    transparent
+  );
+  box-shadow: inset 0 1px 0 var(--hairline-strong);
+}
+
+.contact__intents {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.contact__legend {
+  font-size: var(--text-mono-xs);
+  letter-spacing: var(--tracking-label);
+  color: var(--faint);
+  margin-bottom: 8px;
+  padding: 0;
+  width: 100%;
+}
+
+.contact__intent {
+  position: relative;
+  font-family: var(--font-mono);
+  font-size: var(--text-mono-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 6px 12px;
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease-out-quart),
+    border-color var(--dur-fast) var(--ease-out-quart),
+    background var(--dur-fast) var(--ease-out-quart);
+}
+.contact__intent input { position: absolute; opacity: 0; pointer-events: none; }
+.contact__intent[data-active="true"] {
+  color: var(--signal);
+  border-color: var(--signal);
+  background: var(--signal-wash);
+}
+
+.contact__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.contact__field-label {
+  font-size: var(--text-mono-xs);
+  letter-spacing: var(--tracking-label);
+  color: var(--faint);
+}
+.contact__field input,
+.contact__field textarea {
+  font: inherit;
+  color: var(--text);
+  padding: 10px 12px;
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--radius-md);
+  background: color-mix(in oklab, var(--surface) 80%, transparent);
+  resize: vertical;
+  outline: none;
+  transition: border-color var(--dur-fast) var(--ease-out-quart);
+}
+.contact__field input::placeholder,
+.contact__field textarea::placeholder { color: var(--faint); }
+.contact__field input:focus,
+.contact__field textarea:focus { border-color: var(--signal); }
+
+.contact__submit {
+  align-self: flex-start;
+  font-size: var(--text-mono-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--bg);
+  background: var(--accent);
+  border: 1px solid var(--accent-strong);
+  padding: 9px 16px;
+  border-radius: var(--radius-full);
+  box-shadow: 0 6px 22px -10px var(--glow-accent);
+  transition: transform var(--dur-fast) var(--ease-out-quart),
+    background var(--dur-fast) var(--ease-out-quart);
+}
+.contact__submit:hover { transform: translateY(-1px); background: var(--accent-strong); }
+.contact__submit:active { transform: translateY(0); }
+
+/* ---- Socials ----------------------------------------------------------- */
+.contact__links {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+.contact__link {
+  font-size: var(--text-mono-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-dim);
+  padding: 5px 12px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-full);
+  transition: color var(--dur-fast) var(--ease-out-quart),
+    border-color var(--dur-fast) var(--ease-out-quart);
+}
+.contact__link:hover { color: var(--signal); border-color: var(--signal); }
+
+/* ---- Toast ------------------------------------------------------------- */
+.contact__toast {
+  position: fixed;
+  right: var(--space-5);
+  bottom: calc(var(--dock-h) + var(--space-5));
+  z-index: var(--z-assistant);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--signal);
+  border-radius: var(--radius-lg);
+  background: color-mix(in oklab, var(--surface) 94%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: var(--shadow-floating), 0 0 0 1px var(--signal-wash);
+}
+
+.contact__toast-glyph {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  background: var(--signal-wash);
+  color: var(--signal);
+}
+
+.contact__toast-title {
+  font-size: var(--text-sm);
+  color: var(--text);
+}
+.contact__toast-line {
+  font-size: var(--text-xs);
+  color: var(--muted);
+}

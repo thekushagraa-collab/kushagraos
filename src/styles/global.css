@@ -1,0 +1,141 @@
+/* ============================================================================
+   KushagraOS — Global base
+   Reset, base typography, atmosphere (hairline grid + washes), Lenis glue.
+   Consumes tokens from tokens.css. transform/opacity motion only.
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-size: 100%;
+  /* Lenis controls scroll; never animate scroll-behavior on top of it */
+  scroll-behavior: auto;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+  font-weight: 400;
+  color: var(--text);
+  background-color: var(--bg);
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  transition:
+    background-color var(--dur-slow) var(--ease-out-quart),
+    color var(--dur-slow) var(--ease-out-quart);
+}
+
+/* Atmosphere is owned by the Signal Field (components/fx/SignalField).
+   body stays a flat cool base so the rails/aurora/spotlight read cleanly. */
+
+/* ---- Typography defaults ------------------------------------------------ */
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--text);
+}
+
+code, kbd, samp, .mono {
+  font-family: var(--font-mono);
+  font-feature-settings: "ss01", "zero";
+}
+
+p {
+  max-width: 64ch;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+::selection {
+  background: var(--signal);
+  color: var(--bg);
+}
+
+/* ---- Custom scrollbar (subtle, system-instrument feel) ------------------ */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--hairline-strong);
+  border-radius: var(--radius-full);
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--faint); background-clip: content-box; }
+
+/* ---- Focus-visible: present on every interactive element ---------------- */
+:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+/* ---- Lenis smooth-scroll glue ------------------------------------------- */
+html.lenis,
+html.lenis body { height: auto; }
+
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+.lenis.lenis-smooth iframe { pointer-events: none; }
+
+/* ---- Custom cursor: hide native pointer on fine-pointer devices --------- */
+@media (hover: hover) and (pointer: fine) {
+  html.has-custom-cursor,
+  html.has-custom-cursor * {
+    cursor: none !important;
+  }
+}
+
+/* ---- Motion OFF --------------------------------------------------------- */
+/* KushagraOS animates by default regardless of the OS prefers-reduced-motion
+   setting. The in-app Motion control (menubar) is the ONLY thing that flattens
+   motion, by setting data-motion="off" on <html>. */
+html[data-motion="off"] *,
+html[data-motion="off"] *::before,
+html[data-motion="off"] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* ---- App root ----------------------------------------------------------- */
+#root {
+  position: relative;
+  z-index: var(--z-content);
+  isolation: isolate;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

@@ -1,0 +1,162 @@
+/* ============================================================================
+   Mission Mode — the orchestration centerpiece surface. Shares the studio's
+   form/back/chip primitives (automation-center.css); this file owns the live
+   agent-pipeline hand-off, the assembling state, and the assembled plan steps.
+   All motion is gated by html[data-motion="off"] (OS Motion policy).
+   ========================================================================== */
+
+.mission { display: flex; flex-direction: column; gap: 20px; }
+
+.mission__head { display: flex; flex-direction: column; gap: 6px; }
+.mission__kicker { font-size: 10px; letter-spacing: 0.2em; color: var(--signal, #bfe9ff); }
+.mission__title {
+  font-family: var(--font-display, "Fraunces", Georgia, serif);
+  font-size: clamp(1.7rem, 1.2rem + 1.6vw, 2.4rem);
+  font-weight: 600; letter-spacing: -0.02em; line-height: 1.04;
+}
+.mission__sub { color: var(--muted, #8b8f99); font-size: 14px; line-height: 1.55; max-width: 64ch; }
+
+/* ---- goal form --------------------------------------------------------- */
+.mission__form { display: flex; flex-direction: column; gap: 10px; }
+.mission__inputrow { display: flex; gap: 10px; }
+.mission__input {
+  flex: 1;
+  font-family: var(--font-body, "General Sans", system-ui, sans-serif);
+  font-size: 15px; color: var(--text, #eceef2);
+  background: var(--surface-2, #16161d);
+  border: 1px solid var(--hairline, rgba(236, 238, 242, 0.1));
+  border-radius: 12px; padding: 13px 16px;
+}
+.mission__input:focus-visible { outline: none; border-color: color-mix(in oklab, var(--signal, #bfe9ff) 55%, transparent); }
+.mission__run {
+  flex: none;
+  font-family: var(--font-body, "General Sans", system-ui, sans-serif);
+  font-size: 15px; font-weight: 600; color: var(--bg, #08080c);
+  background: var(--signal, #bfe9ff);
+  border: 0; border-radius: 12px; padding: 13px 26px; cursor: pointer;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), filter 0.18s ease;
+}
+.mission__run:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.08); }
+.mission__run:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ---- live pipeline (the hand-off) -------------------------------------- */
+.mission__pipeline {
+  list-style: none; margin: 0; padding: 16px 18px;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  border-radius: 14px;
+  background: var(--surface, #101015);
+  border: 1px solid var(--hairline, rgba(236, 238, 242, 0.08));
+}
+.mission__node {
+  --agent-accent: var(--signal, #bfe9ff);
+  position: relative;
+  display: flex; align-items: center; gap: 8px;
+  flex: 1 1 auto; min-width: 110px;
+}
+/* connector between nodes */
+.mission__node:not(:last-child)::after {
+  content: ""; flex: 1; height: 2px; min-width: 14px;
+  border-radius: 2px;
+  background: var(--hairline, rgba(236, 238, 242, 0.12));
+  transition: background 0.4s ease;
+}
+.mission__node[data-state="done"]:not(:last-child)::after {
+  background: linear-gradient(to right, color-mix(in oklab, var(--agent-accent) 70%, transparent), var(--hairline, rgba(236, 238, 242, 0.12)));
+}
+.mission__node-dot {
+  width: 12px; height: 12px; border-radius: 999px; flex: none;
+  background: var(--surface-2, #16161d);
+  border: 2px solid var(--hairline, rgba(236, 238, 242, 0.22));
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.mission__node-name {
+  font-size: 12.5px; font-weight: 600;
+  color: var(--muted, #8b8f99);
+  transition: color 0.3s ease;
+}
+.mission__node[data-state="done"] .mission__node-dot {
+  background: var(--agent-accent); border-color: var(--agent-accent);
+  box-shadow: 0 0 12px color-mix(in oklab, var(--agent-accent) 60%, transparent);
+}
+.mission__node[data-state="done"] .mission__node-name { color: var(--text, #eceef2); }
+.mission__node[data-state="active"] .mission__node-dot {
+  background: color-mix(in oklab, var(--agent-accent) 40%, transparent);
+  border-color: var(--agent-accent);
+  animation: mission-node-pulse 1s ease-in-out infinite;
+}
+.mission__node[data-state="active"] .mission__node-name { color: var(--text, #eceef2); }
+@keyframes mission-node-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--agent-accent) 50%, transparent); transform: scale(1); }
+  50% { box-shadow: 0 0 0 6px color-mix(in oklab, var(--agent-accent) 0%, transparent); transform: scale(1.18); }
+}
+html[data-motion="off"] .mission__node[data-state="active"] .mission__node-dot { animation: none; }
+
+/* ---- assembling banner ------------------------------------------------- */
+.mission__assembling {
+  display: flex; align-items: center; gap: 12px;
+  padding: 15px 18px; border-radius: 13px;
+  background: var(--surface, #101015);
+  border: 1px solid var(--hairline, rgba(236, 238, 242, 0.08));
+  font-size: 13px; color: var(--muted, #8b8f99);
+}
+.mission__assembling-pulse {
+  width: 12px; height: 12px; border-radius: 999px; flex: none;
+  background: var(--signal, #bfe9ff);
+  animation: mission-pulse 1.05s ease-in-out infinite;
+}
+@keyframes mission-pulse {
+  0%, 100% { transform: scale(0.7); opacity: 0.5; }
+  50% { transform: scale(1.15); opacity: 1; }
+}
+html[data-motion="off"] .mission__assembling-pulse { animation: none; }
+
+/* ---- assembled plan (inside the Style-Lock frame) ---------------------- */
+.mission__result { animation: mission-rise 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+@keyframes mission-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+html[data-motion="off"] .mission__result { animation: none; }
+
+.mission__readout { color: color-mix(in oklab, var(--text, #eceef2) 94%, var(--af-accent, #bfe9ff)); }
+
+.mission__steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.mission__step {
+  --agent-accent: var(--signal, #bfe9ff);
+  position: relative;
+  padding: 14px 16px 14px 18px;
+  border-radius: 13px;
+  background: var(--surface-2, #16161d);
+  border: 1px solid var(--hairline, rgba(236, 238, 242, 0.08));
+  animation: mission-step-rise 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.mission__step::before {
+  content: ""; position: absolute; inset: 0 auto 0 0; width: 3px;
+  border-radius: 3px 0 0 3px;
+  background: linear-gradient(to bottom, var(--agent-accent), transparent 90%);
+}
+@keyframes mission-step-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+html[data-motion="off"] .mission__step { animation: none; }
+
+.mission__step-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.mission__step-dot {
+  width: 9px; height: 9px; border-radius: 999px; flex: none;
+  background: var(--agent-accent);
+  box-shadow: 0 0 10px color-mix(in oklab, var(--agent-accent) 65%, transparent);
+}
+.mission__step-index { font-size: 11px; color: var(--agent-accent); letter-spacing: 0.08em; }
+.mission__step-title {
+  font-family: var(--font-display, "Fraunces", Georgia, serif);
+  font-weight: 600; font-size: 16px;
+}
+.mission__step-headline { font-size: 14px; line-height: 1.55; margin: 8px 0 4px; }
+
+.mission__summary {
+  display: flex; flex-direction: column; gap: 7px;
+  padding: 14px 16px; border-radius: 13px;
+  background: color-mix(in oklab, var(--af-accent, #bfe9ff) 7%, var(--surface-2, #16161d));
+  border: 1px solid color-mix(in oklab, var(--af-accent, #bfe9ff) 24%, transparent);
+}
+
+@media (max-width: 560px) {
+  .mission__inputrow { flex-direction: column; }
+  .mission__run { padding: 13px; }
+  .mission__node { min-width: 90px; }
+}

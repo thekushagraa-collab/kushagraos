@@ -1,0 +1,120 @@
+/* Signal Field — ambient background. Sits behind content (z-index 0); the
+   foundation content is a positioned layer (z-index 1) above it. GPU only. */
+
+.signal-field {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* ---- Layer 2: aurora drift (rendered first, deepest) -------------------- */
+.sf-aurora {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 140vmax;
+  height: 140vmax;
+  border-radius: 50%;
+  background:
+    radial-gradient(closest-side, var(--aurora-1), transparent 70%),
+    radial-gradient(closest-side, var(--aurora-2), transparent 60%);
+  background-position: 40% 35%, 65% 70%;
+  background-repeat: no-repeat;
+  filter: blur(30px);
+  will-change: transform;
+  transform: translate(-50%, -50%);
+  animation: sf-aurora-drift 30s var(--ease-in-out) infinite;
+}
+
+@keyframes sf-aurora-drift {
+  0%   { transform: translate(-52%, -50%) scale(1); }
+  50%  { transform: translate(-46%, -54%) scale(1.12); }
+  100% { transform: translate(-52%, -50%) scale(1); }
+}
+
+/* ---- Layer 1: vertical light rails -------------------------------------- */
+.sf-rails {
+  position: absolute;
+  inset: 0;
+}
+
+.sf-rail {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--rail-dim);
+  overflow: hidden;
+}
+
+/* the travelling signal segment — a soft bright comet of light down the rail */
+.sf-rail__pulse {
+  position: absolute;
+  left: -1px; /* widen slightly beyond the 1px rail for a glow body */
+  top: 0;
+  width: 3px;
+  height: 30vh;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--signal) 42%,
+    var(--signal-strong) 50%,
+    var(--signal) 58%,
+    transparent
+  );
+  border-radius: var(--radius-full);
+  filter: blur(0.5px) drop-shadow(0 0 6px var(--glow-signal));
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: sf-rail-pulse var(--rail-dur) linear var(--rail-delay) infinite;
+}
+
+@keyframes sf-rail-pulse {
+  0%   { transform: translateY(-32vh); opacity: 0; }
+  14%  { opacity: 0.9; }
+  86%  { opacity: 0.9; }
+  100% { transform: translateY(122vh); opacity: 0; }
+}
+
+/* ---- Edge vignette: focuses the centre, adds frame depth ---------------- */
+.sf-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    125% 125% at 50% 42%,
+    transparent 52%,
+    var(--vignette) 100%
+  );
+}
+
+/* ---- Layer 3: cursor spotlight ------------------------------------------ */
+.sf-spotlight {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 620px;
+  height: 620px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--glow-signal), transparent 70%);
+  opacity: 0;
+  will-change: transform, opacity;
+  transition: opacity var(--dur-slow) var(--ease-out-quart);
+}
+
+/* ---- Motion OFF / still frame: freeze a few rails mid-pulse, brightly, so the
+   resting state still reads as lit (one sits near the wordmark). Gated on the
+   in-app Motion control (data-motion="off"), NOT the OS reduced-motion setting:
+   KushagraOS animates by default for everyone. ---------------------------- */
+html[data-motion="off"] .sf-aurora { animation: none; }
+html[data-motion="off"] .sf-rail__pulse {
+  animation: none;
+  opacity: 0.28;
+  transform: translateY(var(--rail-frozen, 45vh));
+}
+html[data-motion="off"] .sf-rail__pulse[data-bright="true"] {
+  opacity: 0.95;
+  filter: blur(0.5px) drop-shadow(0 0 12px var(--glow-signal));
+}
+html[data-motion="off"] .sf-spotlight { display: none; }

@@ -1,0 +1,166 @@
+/* ============================================================================
+   Integrations — connected-tools surface. Left rail of tools + a panel. Each
+   tool has a signature accent; LIVE (GitHub) vs DEMO is always explicit. Motion
+   is transform/opacity only, gated by the OS Motion policy.
+   ========================================================================== */
+
+.intg { display: flex; flex-direction: column; gap: 20px; }
+
+.intg__head { display: flex; flex-direction: column; gap: 6px; }
+.intg__kicker { font-size: 10px; letter-spacing: 0.2em; color: var(--signal, #bfe9ff); }
+.intg__title {
+  font-family: var(--font-display, "Fraunces", Georgia, serif);
+  font-size: clamp(1.6rem, 1.2rem + 1.5vw, 2.3rem);
+  font-weight: 600; letter-spacing: -0.02em; line-height: 1.05;
+}
+.intg__sub { color: var(--muted, #8b8f99); font-size: 14px; line-height: 1.55; max-width: 66ch; }
+
+.intg__body { display: grid; grid-template-columns: 176px 1fr; gap: 16px; align-items: start; }
+
+/* ---- rail -------------------------------------------------------------- */
+.intg__rail { display: flex; flex-direction: column; gap: 7px; position: sticky; top: 0; }
+.intg__tab {
+  --intg-accent: var(--signal, #bfe9ff);
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 9px;
+  text-align: left; cursor: pointer;
+  padding: 10px 12px; border-radius: 12px;
+  color: var(--text, #eceef2);
+  background: var(--surface, #101015);
+  border: 1px solid var(--hairline, rgba(236, 238, 242, 0.08));
+  transition: border-color 0.18s ease, transform 0.18s ease, background 0.18s ease;
+}
+.intg__tab:hover { transform: translateX(2px); border-color: color-mix(in oklab, var(--intg-accent) 38%, transparent); }
+.intg__tab[data-active="true"] {
+  border-color: color-mix(in oklab, var(--intg-accent) 52%, transparent);
+  background: color-mix(in oklab, var(--intg-accent) 9%, var(--surface, #101015));
+}
+.intg__tab:focus-visible { outline: 2px solid var(--intg-accent); outline-offset: 2px; }
+.intg__tab-glyph {
+  width: 26px; height: 26px; border-radius: 8px; flex: none;
+  display: grid; place-items: center; font-size: 10px; letter-spacing: 0.02em;
+  color: var(--intg-accent);
+  background: color-mix(in oklab, var(--intg-accent) 14%, var(--surface-2, #16161d));
+  border: 1px solid color-mix(in oklab, var(--intg-accent) 30%, transparent);
+}
+.intg__tab-name { font-size: 13.5px; font-weight: 600; }
+.intg__tab-badge {
+  font-size: 8.5px; letter-spacing: 0.1em;
+  padding: 2px 6px; border-radius: 999px;
+  color: var(--muted, #8b8f99);
+  border: 1px solid var(--hairline, rgba(236, 238, 242, 0.14));
+}
+.intg__tab[data-active="true"] .intg__tab-badge { color: var(--intg-accent); border-color: color-mix(in oklab, var(--intg-accent) 40%, transparent); }
+
+/* ---- stage / panel ----------------------------------------------------- */
+.intg__stage {
+  --intg-accent: var(--signal, #bfe9ff);
+  border-radius: 16px;
+  background: var(--surface, #101015);
+  border: 1px solid var(--hairline, rgba(236, 238, 242, 0.08));
+  box-shadow: 0 22px 54px -40px rgba(0, 0, 0, 0.8);
+  overflow: hidden;
+}
+.intg__panel {
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 18px 20px;
+  animation: intg-fade 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes intg-fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+html[data-motion="off"] .intg__panel { animation: none; }
+
+.intg__banner {
+  display: flex; align-items: center; gap: 9px;
+  font-size: 11px; letter-spacing: 0.04em;
+  color: var(--muted, #8b8f99);
+  padding: 9px 12px; border-radius: 10px;
+  background: var(--surface-2, #16161d);
+  border: 1px dashed var(--hairline, rgba(236, 238, 242, 0.18));
+}
+.intg__banner-dot { width: 7px; height: 7px; border-radius: 999px; background: var(--muted, #8b8f99); flex: none; }
+.intg__banner--live {
+  color: color-mix(in oklab, var(--text, #eceef2) 85%, var(--intg-accent));
+  border-style: solid;
+  border-color: color-mix(in oklab, var(--intg-accent) 34%, transparent);
+  background: color-mix(in oklab, var(--intg-accent) 9%, var(--surface-2, #16161d));
+}
+.intg__banner--live .intg__banner-dot { background: var(--intg-accent); box-shadow: 0 0 10px color-mix(in oklab, var(--intg-accent) 70%, transparent); }
+.intg__note { font-size: 11px; color: var(--muted, #8b8f99); }
+
+/* ---- gmail ------------------------------------------------------------- */
+.intg__mail { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.intg__mail-row {
+  display: grid; grid-template-columns: 130px 1fr auto; grid-template-areas: "from subject time" "from preview time";
+  gap: 1px 12px; align-items: baseline;
+  padding: 11px 8px; border-bottom: 1px solid var(--hairline, rgba(236, 238, 242, 0.06));
+}
+.intg__mail-from { grid-area: from; font-weight: 600; font-size: 13px; }
+.intg__mail-subject { grid-area: subject; font-size: 13.5px; }
+.intg__mail-preview { grid-area: preview; font-size: 12.5px; color: var(--muted, #8b8f99); overflow: hidden; text-overflow: ellipsis; }
+.intg__mail-time { grid-area: time; font-size: 11px; color: var(--muted, #8b8f99); }
+.intg__mail-row[data-unread="true"] .intg__mail-subject { font-weight: 600; }
+.intg__mail-row[data-unread="true"] { border-left: 2px solid var(--intg-accent); padding-left: 12px; }
+
+/* ---- calendar ---------------------------------------------------------- */
+.intg__agenda { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.intg__event {
+  display: grid; grid-template-columns: 54px 1fr auto; align-items: center; gap: 12px;
+  padding: 12px 14px; border-radius: 11px;
+  background: var(--surface-2, #16161d);
+  border: 1px solid var(--hairline, rgba(236, 238, 242, 0.07));
+  border-left: 3px solid var(--intg-accent);
+}
+.intg__event[data-kind="build"] { border-left-color: #c8a86b; }
+.intg__event[data-kind="focus"] { border-left-color: #8fa0e0; }
+.intg__event-time { font-size: 14px; font-weight: 600; color: var(--intg-accent); }
+.intg__event-title { font-size: 13.5px; }
+.intg__event-kind { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted, #8b8f99); }
+
+/* ---- notion ------------------------------------------------------------ */
+.intg__pages { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.intg__page { display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 12px; padding: 10px 10px; border-radius: 9px; transition: background 0.16s ease; }
+.intg__page:hover { background: var(--surface-2, #16161d); }
+.intg__page-glyph { color: var(--intg-accent); font-size: 13px; }
+.intg__page-title { font-size: 13.5px; font-weight: 600; }
+.intg__page-kind { font-size: 10px; color: var(--muted, #8b8f99); letter-spacing: 0.06em; }
+.intg__page-edited { font-size: 11.5px; color: var(--muted, #8b8f99); }
+
+/* ---- slack ------------------------------------------------------------- */
+.intg__channel { font-size: 13px; color: var(--intg-accent); font-weight: 600; padding-bottom: 4px; }
+.intg__messages { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.intg__msg { display: grid; grid-template-columns: auto auto; justify-content: start; gap: 8px; align-items: baseline; }
+.intg__msg-user { font-weight: 600; font-size: 13px; }
+.intg__msg-time { font-size: 10.5px; color: var(--muted, #8b8f99); }
+.intg__msg-text { grid-column: 1 / -1; font-size: 13.5px; line-height: 1.5; }
+
+/* ---- github ------------------------------------------------------------ */
+.intg__loading { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted, #8b8f99); padding: 8px 0; }
+.intg__loading-pulse { width: 10px; height: 10px; border-radius: 999px; background: var(--intg-accent); animation: intg-pulse 1.05s ease-in-out infinite; }
+@keyframes intg-pulse { 0%,100% { transform: scale(0.7); opacity: 0.5; } 50% { transform: scale(1.15); opacity: 1; } }
+html[data-motion="off"] .intg__loading-pulse { animation: none; }
+
+.intg__repos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.intg__repo { display: flex; flex-direction: column; gap: 6px; padding: 13px 15px; border-radius: 12px; background: var(--surface-2, #16161d); border: 1px solid var(--hairline, rgba(236, 238, 242, 0.08)); }
+.intg__repo-name { font-family: var(--font-display, "Fraunces", Georgia, serif); font-weight: 600; font-size: 15px; color: var(--intg-accent); text-decoration: none; }
+.intg__repo-name:hover { text-decoration: underline; }
+.intg__repo-desc { font-size: 12.5px; line-height: 1.5; color: var(--muted, #8b8f99); }
+.intg__repo-meta { display: flex; gap: 14px; font-size: 11px; color: var(--muted, #8b8f99); margin-top: auto; }
+
+.intg__empty {
+  display: flex; flex-direction: column; gap: 7px;
+  padding: 26px 20px; text-align: center; align-items: center;
+  border-radius: 12px;
+  background: var(--surface-2, #16161d);
+  border: 1px dashed var(--hairline, rgba(236, 238, 242, 0.16));
+}
+.intg__empty-title { font-family: var(--font-display, "Fraunces", Georgia, serif); font-size: 16px; font-weight: 600; }
+.intg__empty-sub { font-size: 13px; line-height: 1.5; color: var(--muted, #8b8f99); max-width: 46ch; }
+.intg__empty-link { margin-top: 6px; font-size: 13px; font-weight: 600; color: var(--intg-accent); text-decoration: none; }
+.intg__empty-link:hover { text-decoration: underline; }
+.intg__empty-link:focus-visible { outline: 2px solid var(--intg-accent); outline-offset: 3px; border-radius: 4px; }
+
+@media (max-width: 620px) {
+  .intg__body { grid-template-columns: 1fr; }
+  .intg__rail { position: static; flex-direction: row; flex-wrap: wrap; }
+  .intg__repos { grid-template-columns: 1fr; }
+  .intg__mail-row { grid-template-columns: 1fr auto; grid-template-areas: "from time" "subject subject" "preview preview"; }
+}

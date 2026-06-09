@@ -1,0 +1,139 @@
+/* ============================================================================
+   Client Mode — the conversion surface. Calm, trustworthy, premium. Tabs switch
+   between booking, the three form intents, and a services view. Toast mirrors
+   the OS contact toast. Motion is transform/opacity only.
+   ========================================================================== */
+
+.client { position: relative; display: flex; flex-direction: column; gap: 20px; }
+
+.client__head { display: flex; flex-direction: column; gap: 6px; }
+.client__kicker { font-size: 10px; letter-spacing: 0.2em; color: var(--signal, #bfe9ff); }
+.client__title {
+  font-family: var(--font-display, "Fraunces", Georgia, serif);
+  font-size: clamp(1.6rem, 1.2rem + 1.5vw, 2.3rem);
+  font-weight: 600; letter-spacing: -0.02em; line-height: 1.05;
+}
+.client__sub { color: var(--muted, #8b8f99); font-size: 14px; line-height: 1.55; }
+
+/* ---- tabs -------------------------------------------------------------- */
+.client__tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+.client__tab {
+  font-family: var(--font-body, "General Sans", system-ui, sans-serif);
+  font-size: 13px; font-weight: 600;
+  color: var(--muted, #8b8f99);
+  background: var(--surface-2, #16161d);
+  border: 1px solid var(--hairline, rgba(236, 238, 242, 0.08));
+  border-radius: 999px; padding: 8px 15px; cursor: pointer;
+  transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+}
+.client__tab:hover { color: var(--text, #eceef2); transform: translateY(-1px); }
+.client__tab[data-active="true"] {
+  color: var(--bg, #08080c);
+  background: var(--signal, #bfe9ff);
+  border-color: transparent;
+}
+.client__tab:focus-visible { outline: 2px solid var(--signal, #bfe9ff); outline-offset: 2px; }
+
+/* ---- panel ------------------------------------------------------------- */
+.client__panel {
+  display: flex; flex-direction: column; gap: 16px;
+  padding: 22px;
+  border-radius: 16px;
+  background: var(--surface, #101015);
+  border: 1px solid var(--hairline, rgba(236, 238, 242, 0.08));
+  box-shadow: 0 22px 54px -40px rgba(0, 0, 0, 0.8);
+  animation: client-rise 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes client-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+html[data-motion="off"] .client__panel { animation: none; }
+
+.client__panel-title { font-family: var(--font-display, "Fraunces", Georgia, serif); font-size: 19px; font-weight: 600; line-height: 1.3; }
+.client__panel-sub { font-size: 13.5px; line-height: 1.55; color: var(--muted, #8b8f99); }
+
+/* ---- booking ----------------------------------------------------------- */
+.client__booking { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.client__booking-glyph {
+  font-size: 26px; flex: none;
+  width: 52px; height: 52px; border-radius: 14px;
+  display: grid; place-items: center;
+  color: var(--signal, #bfe9ff);
+  background: color-mix(in oklab, var(--signal, #bfe9ff) 10%, var(--surface-2, #16161d));
+  border: 1px solid color-mix(in oklab, var(--signal, #bfe9ff) 28%, transparent);
+}
+.client__book-btn {
+  margin-left: auto; flex: none;
+  font-family: var(--font-body, "General Sans", system-ui, sans-serif);
+  font-size: 14px; font-weight: 600; text-decoration: none;
+  color: var(--bg, #08080c);
+  background: var(--signal, #bfe9ff);
+  border-radius: 11px; padding: 11px 20px;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), filter 0.18s ease;
+}
+.client__book-btn:hover { transform: translateY(-1px); filter: brightness(1.08); }
+.client__book-btn:focus-visible { outline: 2px solid var(--signal, #bfe9ff); outline-offset: 2px; }
+
+/* ---- form -------------------------------------------------------------- */
+.client__form { display: flex; flex-direction: column; gap: 14px; }
+.client__row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.client__field { display: flex; flex-direction: column; gap: 6px; }
+.client__field-label { font-size: 10px; letter-spacing: 0.14em; color: var(--muted, #8b8f99); }
+.client__field input, .client__field textarea {
+  font-family: var(--font-body, "General Sans", system-ui, sans-serif);
+  font-size: 14px; color: var(--text, #eceef2);
+  background: var(--surface-2, #16161d);
+  border: 1px solid var(--hairline, rgba(236, 238, 242, 0.1));
+  border-radius: 11px; padding: 11px 14px;
+  resize: vertical;
+}
+.client__field input:focus-visible, .client__field textarea:focus-visible {
+  outline: none; border-color: color-mix(in oklab, var(--signal, #bfe9ff) 55%, transparent);
+}
+.client__submit {
+  align-self: flex-start;
+  font-size: 13px; letter-spacing: 0.04em; font-weight: 600;
+  color: var(--bg, #08080c);
+  background: var(--signal, #bfe9ff);
+  border: 0; border-radius: 11px; padding: 12px 22px; cursor: pointer;
+  transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), filter 0.18s ease;
+}
+.client__submit:hover { transform: translateY(-1px); filter: brightness(1.08); }
+.client__submit:focus-visible { outline: 2px solid var(--signal, #bfe9ff); outline-offset: 2px; }
+
+/* ---- services ---------------------------------------------------------- */
+.client__services { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.client__service {
+  display: flex; flex-direction: column; gap: 4px;
+  padding: 13px 15px; border-radius: 12px;
+  background: var(--surface-2, #16161d);
+  border: 1px solid var(--hairline, rgba(236, 238, 242, 0.08));
+  border-left: 2px solid var(--signal, #bfe9ff);
+}
+.client__service[data-kind="ai"] { border-left-color: #c8a86b; }
+.client__service[data-kind="action"] { border-left-color: #7fc8b0; }
+.client__service[data-kind="loop"] { border-left-color: #8fa0e0; }
+.client__service-name { font-weight: 600; font-size: 14px; }
+.client__service-note { font-size: 12.5px; color: var(--muted, #8b8f99); line-height: 1.45; }
+
+/* ---- toast ------------------------------------------------------------- */
+.client__toast {
+  position: fixed; right: 24px; bottom: 24px; z-index: 60;
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px; border-radius: 14px;
+  background: color-mix(in oklab, var(--signal, #bfe9ff) 12%, var(--surface, #101015));
+  border: 1px solid color-mix(in oklab, var(--signal, #bfe9ff) 32%, transparent);
+  box-shadow: 0 24px 60px -30px rgba(0, 0, 0, 0.85);
+}
+.client__toast-glyph {
+  width: 30px; height: 30px; border-radius: 999px; flex: none;
+  display: grid; place-items: center;
+  color: var(--bg, #08080c); background: var(--signal, #bfe9ff);
+}
+.client__toast-title { font-weight: 600; font-size: 14px; }
+.client__toast-line { font-size: 12.5px; color: var(--muted, #8b8f99); }
+
+@media (max-width: 560px) {
+  .client__row { grid-template-columns: 1fr; }
+  .client__services { grid-template-columns: 1fr; }
+  .client__booking { flex-direction: column; align-items: flex-start; }
+  .client__book-btn { margin-left: 0; }
+}

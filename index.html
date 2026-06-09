@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en" data-theme="night">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#08080C" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#F4F2EC" media="(prefers-color-scheme: light)" />
+    <meta
+      name="description"
+      content="KushagraOS — Kushagra is an AI automation operator. A portfolio built as a living operating system."
+    />
+    <title>KushagraOS</title>
+
+    <!-- No-FOUC theme bootstrap: user override wins, else the local clock picks
+         day/night (06:00–18:00 → day). Mirrors lib/visitor.clockPreferredTheme.
+         Motion bootstrap: KushagraOS animates by default regardless of the OS
+         prefers-reduced-motion setting; only a stored "off" flattens it. -->
+    <script>
+      (function () {
+        var el = document.documentElement;
+        try {
+          var stored = localStorage.getItem("kos-theme");
+          var h = new Date().getHours();
+          var byClock = h >= 6 && h < 18 ? "day" : "night";
+          el.setAttribute("data-theme", stored || byClock);
+        } catch (e) {
+          el.setAttribute("data-theme", "night");
+        }
+        try {
+          el.setAttribute(
+            "data-motion",
+            localStorage.getItem("kos-motion") === "off" ? "off" : "on",
+          );
+        } catch (e) {
+          el.setAttribute("data-motion", "on");
+        }
+      })();
+    </script>
+
+    <!-- Fonts: Fraunces (display) + Geist Mono (system labels) via Google;
+         General Sans (body) via Fontshare. Preconnect to cut handshake latency. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://api.fontshare.com" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..600&family=Geist+Mono:wght@300..600&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://api.fontshare.com/v2/css?f[]=general-sans@300,400,500,600&display=swap"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

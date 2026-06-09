@@ -1,0 +1,68 @@
+/* AYRA narration — transient one-liner under the menubar when an app focuses. */
+
+.ayra-narration {
+  position: fixed;
+  top: clamp(52px, 7vh, 74px);
+  left: 50%;
+  z-index: 65;
+  transform: translateX(-50%);
+  max-width: min(90vw, 540px);
+  pointer-events: none;
+}
+
+.ayra-narration__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border-radius: 12px;
+  white-space: nowrap;
+  background: color-mix(in oklab, var(--surface, #101015) 88%, transparent);
+  border: 1px solid var(--hairline, rgba(236, 238, 242, 0.08));
+  box-shadow:
+    0 16px 40px -20px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 color-mix(in oklab, #fff 6%, transparent);
+  backdrop-filter: blur(12px) saturate(1.1);
+  opacity: 0;
+  transform: translateY(-8px);
+  transition:
+    opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ayra-narration[data-show] .ayra-narration__pill {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ayra-narration__tag {
+  flex: none;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: var(--signal, #bfe9ff);
+  border: 1px solid color-mix(in oklab, var(--signal, #bfe9ff) 30%, transparent);
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+.ayra-narration__text {
+  font-size: 13px;
+  line-height: 1.3;
+  color: var(--text, #eceef2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 560px) {
+  .ayra-narration__text { white-space: normal; }
+  .ayra-narration__pill { white-space: normal; }
+}
+
+/* Motion policy: instant (no slide) when the in-app Motion control is OFF. */
+html[data-motion="off"] .ayra-narration__pill {
+  transition: opacity 0.15s linear;
+  transform: none;
+}
+html[data-motion="off"] .ayra-narration[data-show] .ayra-narration__pill {
+  transform: none;
+}

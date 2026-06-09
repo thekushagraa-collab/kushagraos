@@ -1,0 +1,3 @@
+/* KushagraOS — stylesheet entry. Order matters: tokens first, then base. */
+@import "./styles/tokens.css";
+@import "./styles/global.css";

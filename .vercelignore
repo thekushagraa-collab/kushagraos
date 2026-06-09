@@ -1,0 +1,9 @@
+# Don't upload test/build artifacts to Vercel — they aren't needed at build time
+# and only slow the upload. Source + api/ + config are enough.
+tests
+playwright.config.ts
+playwright-report
+test-results
+docs
+dist
+*.local
