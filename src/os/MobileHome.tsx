@@ -8,6 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useOS } from "../lib/store";
 import { appsForAudience, getApp } from "../apps/registry";
 import { AppContent } from "../apps/AppContent";
+import { AppIcon } from "../apps/AppIcon";
 import { greeting } from "../lib/visitor";
 import { MotionToggle } from "../components/ui/MotionToggle";
 import { ThemeToggle } from "../components/ui/ThemeToggle";
@@ -46,7 +47,7 @@ export function MobileHome() {
               onClick={() => openMobileApp(app.id)}
             >
               <span className="mhome__icon" data-group={app.group}>
-                <span className="mhome__glyph mono">{app.abbr}</span>
+                <AppIcon id={app.id} className="mhome__icon-svg" />
               </span>
               <span className="mhome__label">{app.short}</span>
             </button>

@@ -1,8 +1,9 @@
 /* ============================================================================
    Dock — app launchers with macOS-style cursor magnification, built on spring
-   physics (Craft Doctrine: physics, not transitions). Magnify uses transform
-   `scale` only (never width/layout). Icons are our own glyph monograms, not
-   Apple icon clones (differentiation mandate). Audience routing orders them.
+   physics (Craft Doctrine: physics, not transitions). Magnify animates the
+   icon's WIDTH/HEIGHT (not scale): the flex row reflows so neighbours push
+   apart instead of overlapping. Icons are our own line marks (AppIcon), not OS
+   icon clones (differentiation mandate). Audience routing orders them.
    ========================================================================== */
 
 import { useRef } from "react";
@@ -15,10 +16,12 @@ import {
 } from "framer-motion";
 import { useOS } from "../lib/store";
 import { appsForAudience, type AppMeta } from "../apps/registry";
+import { AppIcon } from "../apps/AppIcon";
 import "./dock.css";
 
-const MAGNIFY_RANGE = 130; // px of cursor influence on each side
-const MAX_SCALE = 1.62;
+const MAGNIFY_RANGE = 120; // px of cursor influence on each side
+const BASE_SIZE = 44;
+const MAX_SIZE = 64;
 
 function DockIcon({ app, mouseX }: { app: AppMeta; mouseX: MotionValue<number> }) {
   const ref = useRef<HTMLButtonElement>(null);
@@ -30,12 +33,14 @@ function DockIcon({ app, mouseX }: { app: AppMeta; mouseX: MotionValue<number> }
     if (!b) return MAGNIFY_RANGE * 2;
     return x - (b.x + b.width / 2);
   });
-  const scaleTarget = useTransform(
+  // Drive SIZE (not scale) so the flex layout reserves real space and neighbours
+  // slide outward — eliminating the overlap that pure-scale magnification caused.
+  const sizeTarget = useTransform(
     distance,
     [-MAGNIFY_RANGE, 0, MAGNIFY_RANGE],
-    [1, MAX_SCALE, 1],
+    [BASE_SIZE, MAX_SIZE, BASE_SIZE],
   );
-  const scale = useSpring(scaleTarget, { stiffness: 320, damping: 22, mass: 0.25 });
+  const size = useSpring(sizeTarget, { stiffness: 300, damping: 24, mass: 0.22 });
 
   return (
     <button
@@ -50,9 +55,9 @@ function DockIcon({ app, mouseX }: { app: AppMeta; mouseX: MotionValue<number> }
       <motion.span
         className="dock__icon"
         data-group={app.group}
-        style={{ scale }}
+        style={{ width: size, height: size }}
       >
-        <span className="dock__glyph mono">{app.abbr}</span>
+        <AppIcon id={app.id} className="dock__icon-svg" />
       </motion.span>
     </button>
   );

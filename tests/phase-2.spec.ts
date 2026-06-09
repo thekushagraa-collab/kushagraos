@@ -52,6 +52,10 @@ test.describe("Phase 2 — OS shell", () => {
     const before = await page.locator("html").getAttribute("data-theme");
     await page.keyboard.press("Control+k");
     await page.getByTestId("cmdk-input").fill("switch to");
+    // Wait for the filtered results to settle on the theme command before
+    // triggering it — pressing Enter before the async list update lands raced
+    // against a stale selection under CPU load.
+    await expect(page.getByTestId("cmdk-item-theme")).toBeVisible();
     await page.keyboard.press("Enter");
     await expect(page.locator("html")).not.toHaveAttribute("data-theme", before ?? "");
   });
@@ -63,13 +67,15 @@ test.describe("Phase 2 — OS shell", () => {
     await expect(page.getByTestId("menubar")).toBeVisible();
     await expect(page.getByTestId("dock")).toBeVisible();
 
+    // Magnification animates the icon's WIDTH (reflow), so neighbours push
+    // apart instead of overlapping — assert the hovered icon grows wider.
     const icon = page.locator('[data-testid="app-launcher-about"] .dock__icon');
-    const before = await icon.evaluate((el) => getComputedStyle(el).transform);
+    const before = (await icon.boundingBox())!.width;
     const box = await page.getByTestId("app-launcher-about").boundingBox();
     await page.mouse.move(box!.x + box!.width / 2, box!.y + box!.height / 2);
     await page.waitForTimeout(280);
-    const after = await icon.evaluate((el) => getComputedStyle(el).transform);
-    expect(after, "icon should scale toward the cursor").not.toBe(before);
+    const after = (await icon.boundingBox())!.width;
+    expect(after, "icon should magnify toward the cursor").toBeGreaterThan(before + 4);
   });
 
   test("desktop: opening an app springs a window in", async ({ page }) => {

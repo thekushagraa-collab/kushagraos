@@ -83,7 +83,9 @@
 .boot__audiences {
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* Three lenses → one symmetrical row. Collapses to a single column on phones
+     (see the max-width query below). */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-3);
   width: 100%;
 }

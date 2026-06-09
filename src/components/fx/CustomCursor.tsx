@@ -26,19 +26,19 @@ export function CustomCursor() {
     const root = document.documentElement;
     root.classList.add("has-custom-cursor");
 
-    // Target (true cursor) vs ring (lerped follower)
+    // Dot and ring share one position so the glow stays locked to the dot —
+    // a precision reticle, not a laggy trailing halo. (A previous lerp made the
+    // ring visibly drift behind the dot while moving.) The ring keeps its soft,
+    // larger look via CSS; only its size animates on hover/press, not position.
     let tx = window.innerWidth / 2;
     let ty = window.innerHeight / 2;
-    let rx = tx;
-    let ry = ty;
     let visible = false;
     let frame = 0;
 
     const render = () => {
-      rx += (tx - rx) * 0.18;
-      ry += (ty - ry) * 0.18;
-      dot.style.transform = `translate3d(${tx}px, ${ty}px, 0) translate(-50%, -50%)`;
-      ring.style.transform = `translate3d(${rx}px, ${ry}px, 0) translate(-50%, -50%)`;
+      const t = `translate3d(${tx}px, ${ty}px, 0) translate(-50%, -50%)`;
+      dot.style.transform = t;
+      ring.style.transform = t;
       frame = requestAnimationFrame(render);
     };
     frame = requestAnimationFrame(render);
