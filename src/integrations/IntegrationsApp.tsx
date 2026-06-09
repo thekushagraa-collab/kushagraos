@@ -5,7 +5,7 @@
    /api/github). Motion is transform/opacity only, gated by the OS Motion policy.
    ========================================================================== */
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactElement } from "react";
 import {
   INTEGRATIONS, GITHUB_USER, fetchGithub,
   DEMO_GMAIL, DEMO_CALENDAR, DEMO_NOTION, DEMO_SLACK,
@@ -157,7 +157,7 @@ function GithubPanel() {
   );
 }
 
-const PANELS: Record<IntegrationId, () => JSX.Element> = {
+const PANELS: Record<IntegrationId, () => ReactElement> = {
   github: GithubPanel,
   gmail: GmailPanel,
   calendar: CalendarPanel,

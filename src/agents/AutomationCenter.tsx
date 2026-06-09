@@ -159,7 +159,7 @@ export function AutomationCenter() {
       {reply && !running && (
         <div className="studio__result" data-testid="agent-result">
           <ArtifactFrame agent={agent} fallback={reply.fallback}>
-            <AgentArtifact agentId={selected} result={reply.result as Record<string, unknown>} />
+            <AgentArtifact agentId={selected} result={reply.result as unknown as Record<string, unknown>} />
           </ArtifactFrame>
         </div>
       )}
